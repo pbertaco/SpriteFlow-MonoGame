@@ -1,4 +1,21 @@
-﻿namespace Dragon;
+﻿global using Microsoft.Xna.Framework;
+global using Microsoft.Xna.Framework.Audio;
+global using Microsoft.Xna.Framework.Content;
+global using Microsoft.Xna.Framework.Design;
+global using Microsoft.Xna.Framework.Graphics;
+global using Microsoft.Xna.Framework.Graphics.PackedVector;
+global using Microsoft.Xna.Framework.Input;
+global using Microsoft.Xna.Framework.Input.Touch;
+global using Microsoft.Xna.Framework.Media;
+global using System;
+global using System.Collections.Generic;
+global using System.IO;
+global using System.Linq;
+global using System.Net.Http;
+global using System.Threading;
+global using System.Threading.Tasks;
+
+namespace Dragon;
 
 public class DGame : Game
 {
