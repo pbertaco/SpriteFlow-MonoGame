@@ -2,7 +2,7 @@
 
 public class DLabelNode : DNode
 {
-    internal static SpriteFont defaultSpriteFont;
+    public static SpriteFont defaultSpriteFont;
 
     Color color;
     SpriteEffects spriteEffects;
@@ -17,7 +17,7 @@ public class DLabelNode : DNode
     Vector2 textureSize => spriteFont.MeasureString(text);
 
     string _text;
-    internal string text
+    public string text
     {
         get => _text;
         set
@@ -28,7 +28,7 @@ public class DLabelNode : DNode
     }
 
     SpriteFont _spriteFont;
-    internal SpriteFont spriteFont
+    public SpriteFont spriteFont
     {
         get => _spriteFont;
         set
@@ -40,7 +40,7 @@ public class DLabelNode : DNode
     }
 
     float _fontSize;
-    internal float fontSize
+    public float fontSize
     {
         get => _fontSize;
         set
@@ -51,7 +51,7 @@ public class DLabelNode : DNode
     }
 
     Vector2 _anchorPoint;
-    internal Vector2 anchorPoint
+    public Vector2 anchorPoint
     {
         get => _anchorPoint;
         set
@@ -61,35 +61,35 @@ public class DLabelNode : DNode
         }
     }
 
-    internal DLabelNode(string text, SpriteFont font, Color? color = null, float? fontSize = null)
+    public DLabelNode(string text, SpriteFont font, Color? color = null, float? fontSize = null)
     {
         load(font, fontSize, color, text);
     }
 
-    internal DLabelNode(string text, string assetName, Color? color = null, float? fontSize = null)
+    public DLabelNode(string text, string assetName, Color? color = null, float? fontSize = null)
     {
         SpriteFont font = loadSpriteFont(assetName);
         load(font, fontSize, color, text);
     }
 
-    internal DLabelNode(string text, SpriteFont font, float fontSize)
+    public DLabelNode(string text, SpriteFont font, float fontSize)
     {
         load(font, fontSize, null, text);
     }
 
-    internal DLabelNode(string text, string assetName, float fontSize)
+    public DLabelNode(string text, string assetName, float fontSize)
     {
         SpriteFont font = loadSpriteFont(assetName);
         load(font, fontSize, null, text);
     }
 
-    internal DLabelNode(string text, Color? color = null, float? fontSize = null)
+    public DLabelNode(string text, Color? color = null, float? fontSize = null)
     {
         SpriteFont font = defaultSpriteFont ?? loadSpriteFont();
         load(font, fontSize, color, text);
     }
 
-    internal DLabelNode(string text, float fontSize)
+    public DLabelNode(string text, float fontSize)
     {
         SpriteFont font = defaultSpriteFont ?? loadSpriteFont();
         load(font, fontSize, null, text);
@@ -111,7 +111,7 @@ public class DLabelNode : DNode
         updateOrigin();
     }
 
-    internal override void draw(Vector2 currentPosition, float currentRotation, Vector2 currentScale, float currentAlpha)
+    public override void draw(Vector2 currentPosition, float currentRotation, Vector2 currentScale, float currentAlpha)
     {
         if (hidden || currentAlpha <= 0.01f)
         {
@@ -133,7 +133,7 @@ public class DLabelNode : DNode
         _origin = textureSize * _anchorPoint;
     }
 
-    internal static SpriteFont loadSpriteFont(string assetName = "missingSpriteFont", bool handleException = true)
+    public static SpriteFont loadSpriteFont(string assetName = "missingSpriteFont", bool handleException = true)
     {
         SpriteFont spriteFont = null;
 

@@ -1,13 +1,13 @@
 ﻿namespace Dragon;
 
-internal class Names
+public class Names
 {
     List<string> listMFirst = new();
     List<string> listFFirst = new();
     List<string> listLast = new();
 
     static Names _instance;
-    internal static Names instance
+    public static Names instance
     {
         get
         {
@@ -21,7 +21,7 @@ internal class Names
         }
     }
 
-    internal string firstName(bool isMale)
+    public string firstName(bool isMale)
     {
         if (isMale)
         {
@@ -33,12 +33,12 @@ internal class Names
         }
     }
 
-    internal string lastName()
+    public string lastName()
     {
         return listLast.random();
     }
 
-    internal string name(bool isMale, bool isFullName)
+    public string name(bool isMale, bool isFullName)
     {
         string name = "";
 

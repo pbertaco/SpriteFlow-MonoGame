@@ -2,6 +2,6 @@
 
 public class DPlayerData
 {
-    internal virtual void newGame() { }
-    internal virtual void updateModelVersion() { }
+    public virtual void newGame() { }
+    public virtual void updateModelVersion() { }
 }

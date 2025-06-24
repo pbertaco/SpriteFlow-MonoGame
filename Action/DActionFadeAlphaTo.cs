@@ -2,16 +2,16 @@
 
 public class DActionFadeAlphaTo : DActionFadeAlphaBy
 {
-    internal DActionFadeAlphaTo(float factor, float duration) : base(factor, duration)
+    public DActionFadeAlphaTo(float factor, float duration) : base(factor, duration)
     {
     }
 
-    internal override DAction copy()
+    public override DAction copy()
     {
         return new DActionFadeAlphaTo(factor, duration).with(timingFunction);
     }
 
-    internal override void runOnNode(DNode node)
+    public override void runOnNode(DNode node)
     {
         speed = (factor - node.alpha) / duration;
     }

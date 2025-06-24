@@ -4,7 +4,7 @@ public class DInputManager
 {
     Dictionary<int, DTouch> touches;
 
-    internal DInputManager()
+    public DInputManager()
     {
         touches = new Dictionary<int, DTouch>();
     }
@@ -14,17 +14,17 @@ public class DInputManager
 
     KeyboardState keyboardState;
     KeyboardState lastKeyboardState;
-    internal void update()
+    public void update()
     {
         updateKeyboard();
         updateMouse();
     }
 
-    internal bool keyPress(Keys key)
+    public bool keyPress(Keys key)
     {
         return keyboardState.IsKeyDown(key) && lastKeyboardState.IsKeyUp(key);
     }
-    internal bool keyRelease(Keys key)
+    public bool keyRelease(Keys key)
     {
         return lastKeyboardState.IsKeyDown(key) && keyboardState.IsKeyUp(key);
     }
@@ -77,7 +77,7 @@ public class DInputManager
 #endif
 
 #if iOS || Android || __IOS__
-    internal void update()
+    public void update()
     {
         updateTouchPanel();
     }
@@ -124,7 +124,7 @@ public class DInputManager
         }
     }
 
-    internal bool keyPress(Keys keys)
+    public bool keyPress(Keys keys)
     {
         return false;
     }

@@ -5,9 +5,9 @@ namespace Dragon;
 
 public class MemoryCard<T> where T : DPlayerData, new()
 {
-    internal static MemoryCard<T> current;
+    public static MemoryCard<T> current;
 
-    internal T data;
+    public T data;
     string fileName;
 
     public MemoryCard(string fileName)
@@ -16,7 +16,7 @@ public class MemoryCard<T> where T : DPlayerData, new()
         loadGame(fileName);
     }
 
-    internal void saveGame()
+    public void saveGame()
     {
         saveGame(fileName ?? DateTime.Now.ToString());
     }
@@ -28,7 +28,7 @@ public class MemoryCard<T> where T : DPlayerData, new()
         File.WriteAllText(path(fileName), contents);
     }
 
-    internal void loadGame(string loadFileName)
+    public void loadGame(string loadFileName)
     {
         fileName = loadFileName;
         string path = this.path(fileName);
@@ -46,12 +46,12 @@ public class MemoryCard<T> where T : DPlayerData, new()
         }
     }
 
-    internal void delete(string fileName)
+    public void delete(string fileName)
     {
         File.Delete(path(fileName));
     }
 
-    internal string path(string fileName, string extension = "")
+    public string path(string fileName, string extension = "")
     {
         if (extension.Length > 0)
         {

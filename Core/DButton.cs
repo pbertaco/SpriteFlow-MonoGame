@@ -2,47 +2,47 @@
 
 public class DButton : DControl
 {
-    internal Action onTouchDownInside;
-    internal Action onTouchUpInside;
-    internal Action onTouchUpOutside;
-    internal Action onTouchMovedInside;
-    internal Action onTouchMovedOutside;
+    public Action onTouchDownInside;
+    public Action onTouchUpInside;
+    public Action onTouchUpOutside;
+    public Action onTouchMovedInside;
+    public Action onTouchMovedOutside;
 
     List<DTouch> touchList = new List<DTouch>();
 
     DSpriteNode icon;
 
-    internal DButton(Color? color = null, Vector2? size = null) : base(color, size)
+    public DButton(Color? color = null, Vector2? size = null) : base(color, size)
     {
     }
 
-    internal DButton(Vector2 size) : base(size)
+    public DButton(Vector2 size) : base(size)
     {
     }
 
-    internal DButton(Texture2D texture, Color? color = null, Vector2? size = null) : base(texture, color, size)
+    public DButton(Texture2D texture, Color? color = null, Vector2? size = null) : base(texture, color, size)
     {
     }
 
-    internal DButton(Texture2D texture, Vector2 size) : base(texture, size)
+    public DButton(Texture2D texture, Vector2 size) : base(texture, size)
     {
     }
 
-    internal DButton(string assetName, Color? color = null, Vector2? size = null) : base(assetName, color, size)
+    public DButton(string assetName, Color? color = null, Vector2? size = null) : base(assetName, color, size)
     {
     }
 
-    internal DButton(string assetName, Vector2 size) : base(assetName, size)
+    public DButton(string assetName, Vector2 size) : base(assetName, size)
     {
     }
 
-    internal override void load(Texture2D texture, Color? color, Vector2? size)
+    public override void load(Texture2D texture, Color? color, Vector2? size)
     {
         base.load(texture, color, size);
         userInteractionEnabled = true;
     }
 
-    internal void addIcon(DSpriteNode icon, bool scaleToFit = true)
+    public void addIcon(DSpriteNode icon, bool scaleToFit = true)
     {
         if (this.icon != null)
         {
@@ -60,12 +60,12 @@ public class DButton : DControl
         this.icon = icon;
     }
 
-    internal void addIcon(string assetName, bool scaleToFit = true)
+    public void addIcon(string assetName, bool scaleToFit = true)
     {
         addIcon(new DSpriteNode(assetName), scaleToFit);
     }
 
-    internal override void touchDown(DTouch touch)
+    public override void touchDown(DTouch touch)
     {
         base.touchDown(touch);
 
@@ -76,7 +76,7 @@ public class DButton : DControl
         }
     }
 
-    internal override void touchMoved(DTouch touch)
+    public override void touchMoved(DTouch touch)
     {
         if (userInteractionEnabled && touchList.Contains(touch))
         {
@@ -91,7 +91,7 @@ public class DButton : DControl
         }
     }
 
-    internal override void touchUp(DTouch touch)
+    public override void touchUp(DTouch touch)
     {
         base.touchUp(touch);
 
@@ -108,7 +108,7 @@ public class DButton : DControl
         }
     }
 
-    internal override void removeFromParent(bool recursive = true)
+    public override void removeFromParent(bool recursive = true)
     {
         base.removeFromParent(recursive);
 
@@ -122,13 +122,13 @@ public class DButton : DControl
         }
     }
 
-    internal void setOnTouchActionSetTexture(string assetName, DSpriteNode target = null)
+    public void setOnTouchActionSetTexture(string assetName, DSpriteNode target = null)
     {
         target = target ?? this;
         setOnTouchAction(DAction.setTexture(assetName), DAction.setTexture(target.texture), target);
     }
 
-    internal void setOnTouchAction(DAction actionDown, DAction actionUp, DNode target = null)
+    public void setOnTouchAction(DAction actionDown, DAction actionUp, DNode target = null)
     {
         target = target ?? this;
         string actionDownKey = nextActionKey();

@@ -4,7 +4,7 @@ public class DActionGroup : DAction
 {
     protected List<DAction> actions;
 
-    internal DActionGroup(IEnumerable<DAction> actions) : base(0)
+    public DActionGroup(IEnumerable<DAction> actions) : base(0)
     {
         this.actions = new List<DAction>();
         foreach (DAction action in actions)
@@ -18,12 +18,12 @@ public class DActionGroup : DAction
         }
     }
 
-    internal override DAction copy()
+    public override DAction copy()
     {
         return new DActionGroup(actions);
     }
 
-    internal override void runOnNode(DNode node)
+    public override void runOnNode(DNode node)
     {
         foreach (DAction action in actions)
         {
@@ -31,7 +31,7 @@ public class DActionGroup : DAction
         }
     }
 
-    internal override void evaluateWithNode(DNode node, float dt)
+    public override void evaluateWithNode(DNode node, float dt)
     {
         elapsed += dt;
 

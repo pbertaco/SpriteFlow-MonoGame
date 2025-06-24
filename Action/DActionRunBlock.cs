@@ -4,17 +4,17 @@ public class DActionRunBlock : DAction
 {
     Action block;
 
-    internal DActionRunBlock(Action block) : base(0)
+    public DActionRunBlock(Action block) : base(0)
     {
         this.block = block;
     }
 
-    internal override DAction copy()
+    public override DAction copy()
     {
         return new DActionRunBlock(block);
     }
 
-    internal override void evaluateWithNode(DNode node, float dt)
+    public override void evaluateWithNode(DNode node, float dt)
     {
         base.evaluateWithNode(node, dt);
 

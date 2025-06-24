@@ -5,18 +5,18 @@ public class DActionRotateBy : DAction
     protected float radians;
     protected float speed;
 
-    internal DActionRotateBy(float radians, float duration) : base(duration)
+    public DActionRotateBy(float radians, float duration) : base(duration)
     {
         this.radians = radians;
         speed = radians / this.duration;
     }
 
-    internal override DAction copy()
+    public override DAction copy()
     {
         return new DActionRotateBy(radians, duration).with(timingFunction);
     }
 
-    internal override void evaluateWithNode(DNode node, float dt)
+    public override void evaluateWithNode(DNode node, float dt)
     {
         base.evaluateWithNode(node, dt);
 

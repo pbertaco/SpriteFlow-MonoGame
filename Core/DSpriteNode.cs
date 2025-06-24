@@ -2,16 +2,16 @@
 
 public class DSpriteNode : DNode
 {
-    internal static bool loadFromStream;
+    public static bool loadFromStream;
 
-    internal BlendState blendState;
+    public BlendState blendState;
     protected SpriteEffects spriteEffects;
     protected float layerDepth;
 
     Color drawColor;
 
     Color _color;
-    internal Color color
+    public Color color
     {
         get => _color;
         set
@@ -22,7 +22,7 @@ public class DSpriteNode : DNode
     }
 
     float _colorBlendFactor;
-    internal float colorBlendFactor
+    public float colorBlendFactor
     {
         get => _colorBlendFactor;
 
@@ -42,7 +42,7 @@ public class DSpriteNode : DNode
     Vector2 textureSize => new(_texture?.Width ?? 1, _texture?.Height ?? 1);
 
     Texture2D _texture;
-    internal Texture2D texture
+    public Texture2D texture
     {
         get => _texture;
         set
@@ -54,7 +54,7 @@ public class DSpriteNode : DNode
     }
 
     Rectangle? _sourceRectangle;
-    internal Rectangle? sourceRectangle
+    public Rectangle? sourceRectangle
     {
         get => _sourceRectangle;
         set
@@ -66,7 +66,7 @@ public class DSpriteNode : DNode
     }
 
     Vector2 _size;
-    internal Vector2 size
+    public Vector2 size
     {
         get => _size * scale;
         set
@@ -77,7 +77,7 @@ public class DSpriteNode : DNode
     }
 
     Vector2 _anchorPoint;
-    internal Vector2 anchorPoint
+    public Vector2 anchorPoint
     {
         get => _anchorPoint;
         set
@@ -87,41 +87,41 @@ public class DSpriteNode : DNode
         }
     }
 
-    internal DSpriteNode(Color? color = null, Vector2? size = null)
+    public DSpriteNode(Color? color = null, Vector2? size = null)
     {
         Texture2D texture = loadTexture2D();
         load(texture, color, size);
     }
 
-    internal DSpriteNode(Vector2 size)
+    public DSpriteNode(Vector2 size)
     {
         Texture2D texture = loadTexture2D();
         load(texture, null, size);
     }
 
-    internal DSpriteNode(Texture2D texture, Color? color = null, Vector2? size = null)
+    public DSpriteNode(Texture2D texture, Color? color = null, Vector2? size = null)
     {
         load(texture, color, size);
     }
 
-    internal DSpriteNode(Texture2D texture, Vector2 size)
+    public DSpriteNode(Texture2D texture, Vector2 size)
     {
         load(texture, null, size);
     }
 
-    internal DSpriteNode(string assetName, Color? color = null, Vector2? size = null)
+    public DSpriteNode(string assetName, Color? color = null, Vector2? size = null)
     {
         Texture2D texture = loadTexture2D(assetName);
         load(texture, color, size);
     }
 
-    internal DSpriteNode(string assetName, Vector2 size)
+    public DSpriteNode(string assetName, Vector2 size)
     {
         Texture2D texture = loadTexture2D(assetName);
         load(texture, null, size);
     }
 
-    internal virtual void load(Texture2D texture, Color? color, Vector2? size)
+    public virtual void load(Texture2D texture, Color? color, Vector2? size)
     {
         _texture = texture;
         position = Vector2.Zero;
@@ -139,7 +139,7 @@ public class DSpriteNode : DNode
         updateColor();
     }
 
-    internal override void beforeDraw(Vector2 currentPosition, float currentRotation, Vector2 currentScale, float currentAlpha)
+    public override void beforeDraw(Vector2 currentPosition, float currentRotation, Vector2 currentScale, float currentAlpha)
     {
         base.beforeDraw(currentPosition, currentRotation, currentScale, currentAlpha);
 
@@ -153,7 +153,7 @@ public class DSpriteNode : DNode
         }
     }
 
-    internal override void draw(Vector2 currentPosition, float currentRotation, Vector2 currentScale, float currentAlpha)
+    public override void draw(Vector2 currentPosition, float currentRotation, Vector2 currentScale, float currentAlpha)
     {
         if (hidden || currentAlpha <= 0.01f)
         {
@@ -165,28 +165,28 @@ public class DSpriteNode : DNode
         drawChildren();
     }
 
-    internal Vector2 calculateScaleToFit(Vector2 size)
+    public Vector2 calculateScaleToFit(Vector2 size)
     {
         float scale = Math.Min(size.X / _size.X, size.Y / _size.Y);
         return new Vector2(Math.Min(1, scale));
     }
 
-    internal Vector2 calculateScaleToFill(Vector2 size)
+    public Vector2 calculateScaleToFill(Vector2 size)
     {
         float scale = Math.Max(size.X / _size.X, size.Y / _size.Y);
         return new Vector2(Math.Max(1, scale));
     }
 
-    internal void setScaleToFit(Vector2 size)
+    public void setScaleToFit(Vector2 size)
     {
         scale = calculateScaleToFit(size);
     }
-    internal void setScaleToFill(Vector2 size)
+    public void setScaleToFill(Vector2 size)
     {
         scale = calculateScaleToFill(size);
     }
 
-    internal override void touchDown(DTouch touch)
+    public override void touchDown(DTouch touch)
     {
         if (contains(touch))
         {
@@ -197,7 +197,7 @@ public class DSpriteNode : DNode
         base.touchDown(touch);
     }
 
-    internal virtual bool contains(DTouch touch)
+    public virtual bool contains(DTouch touch)
     {
         if (parent != null)
         {
@@ -247,14 +247,14 @@ public class DSpriteNode : DNode
         return texture.Name;
     }
 
-    internal static Texture2D loadTexture2D(string assetName)
+    public static Texture2D loadTexture2D(string assetName)
     {
         return loadTexture2D(true, assetName);
     }
 
-    internal static Dictionary<string, Texture2D> content = new();
+    public static Dictionary<string, Texture2D> content = new();
 
-    internal static Texture2D loadTexture2D(bool handleException = true, string assetName = "")
+    public static Texture2D loadTexture2D(bool handleException = true, string assetName = "")
     {
         Texture2D texture = null;
 

@@ -1,12 +1,12 @@
 ﻿namespace Dragon;
 
-internal class DConsole
+public class DConsole
 {
-    internal static bool enabled = false;
+    public static bool enabled = false;
 
     static List<Type> types = new();
 
-    internal static void WriteLine(object sender, string text)
+    public static void WriteLine(object sender, string text)
     {
         if (!enabled)
         {
@@ -31,7 +31,7 @@ internal class DConsole
         }
     }
 
-    internal static void enable(Type type)
+    public static void enable(Type type)
     {
         if (types.Contains(type))
         {
@@ -41,7 +41,7 @@ internal class DConsole
         types.Add(type);
     }
 
-    internal static void disable(Type type)
+    public static void disable(Type type)
     {
         if (!types.Contains(type))
         {

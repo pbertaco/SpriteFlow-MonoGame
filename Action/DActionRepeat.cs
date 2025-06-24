@@ -7,7 +7,7 @@ public class DActionRepeat : DAction
 
     int executionCount;
 
-    internal DActionRepeat(DAction action, int count) : base(0)
+    public DActionRepeat(DAction action, int count) : base(0)
     {
         this.action = action;
         this.count = count;
@@ -15,17 +15,17 @@ public class DActionRepeat : DAction
         duration = action.duration * count;
     }
 
-    internal override DAction copy()
+    public override DAction copy()
     {
         return new DActionRepeat(action, count);
     }
 
-    internal override void runOnNode(DNode node)
+    public override void runOnNode(DNode node)
     {
         action.runOnNode(node);
     }
 
-    internal override void evaluateWithNode(DNode node, float dt)
+    public override void evaluateWithNode(DNode node, float dt)
     {
         elapsed += dt;
 

@@ -4,7 +4,7 @@ public class DActionSequence : DActionGroup
 {
     IEnumerator<DAction> enumerator;
 
-    internal DActionSequence(IEnumerable<DAction> actions) : base(actions)
+    public DActionSequence(IEnumerable<DAction> actions) : base(actions)
     {
         duration = 0;
 
@@ -14,12 +14,12 @@ public class DActionSequence : DActionGroup
         }
     }
 
-    internal override DAction copy()
+    public override DAction copy()
     {
         return new DActionSequence(actions);
     }
 
-    internal override void runOnNode(DNode node)
+    public override void runOnNode(DNode node)
     {
         enumerator = actions.GetEnumerator();
         if (enumerator.MoveNext())
@@ -28,7 +28,7 @@ public class DActionSequence : DActionGroup
         }
     }
 
-    internal override void evaluateWithNode(DNode node, float dt)
+    public override void evaluateWithNode(DNode node, float dt)
     {
         elapsed += dt;
 

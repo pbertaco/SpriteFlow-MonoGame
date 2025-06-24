@@ -2,7 +2,7 @@
 
 static class ColorExtension
 {
-    internal static Color multiply(this Color self, Color other)
+    public static Color multiply(this Color self, Color other)
     {
         int r = self.R * other.R / 255;
         int g = self.G * other.G / 255;
@@ -10,7 +10,7 @@ static class ColorExtension
         return new Color(r, g, b);
     }
 
-    internal static Color convert(this Color self, IEnumerable<Color> colors)
+    public static Color convert(this Color self, IEnumerable<Color> colors)
     {
         int i = 0;
         Color color = new();

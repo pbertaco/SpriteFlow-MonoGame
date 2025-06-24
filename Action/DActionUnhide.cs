@@ -2,16 +2,16 @@
 
 public class DActionUnhide : DAction
 {
-    internal DActionUnhide() : base(0)
+    public DActionUnhide() : base(0)
     {
     }
 
-    internal override DAction copy()
+    public override DAction copy()
     {
         return new DActionUnhide();
     }
 
-    internal override void runOnNode(DNode node)
+    public override void runOnNode(DNode node)
     {
         node.hidden = false;
     }

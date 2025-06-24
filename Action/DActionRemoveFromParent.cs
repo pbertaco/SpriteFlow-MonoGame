@@ -2,16 +2,16 @@
 
 public class DActionRemoveFromParent : DAction
 {
-    internal DActionRemoveFromParent() : base(0)
+    public DActionRemoveFromParent() : base(0)
     {
     }
 
-    internal override DAction copy()
+    public override DAction copy()
     {
         return new DActionRemoveFromParent();
     }
 
-    internal override void runOnNode(DNode node)
+    public override void runOnNode(DNode node)
     {
         node.removeFromParent(false);
     }

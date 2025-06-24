@@ -16,12 +16,12 @@ public class DActionAnimate : DAction
         this.restore = restore;
     }
 
-    internal override DAction copy()
+    public override DAction copy()
     {
         return new DActionAnimate(textures, duration, resize, restore).with(timingFunction);
     }
 
-    internal override void runOnNode(DNode node)
+    public override void runOnNode(DNode node)
     {
         DSpriteNode spriteNode = (DSpriteNode)node;
 
@@ -36,7 +36,7 @@ public class DActionAnimate : DAction
         }
     }
 
-    internal override void evaluateWithNode(DNode node, float dt)
+    public override void evaluateWithNode(DNode node, float dt)
     {
         base.evaluateWithNode(node, dt);
 
@@ -75,7 +75,7 @@ public class DActionAnimate : DAction
         }
     }
 
-    internal override DAction reversed()
+    public override DAction reversed()
     {
         return new DActionAnimate(textures.Reverse(), duration, resize, restore);
     }

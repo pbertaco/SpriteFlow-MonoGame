@@ -5,18 +5,18 @@ public class DActionResizeBy : DAction
     protected Vector2 size;
     protected Vector2 speed;
 
-    internal DActionResizeBy(Vector2 size, float duration) : base(duration)
+    public DActionResizeBy(Vector2 size, float duration) : base(duration)
     {
         this.size = size;
         speed = size / this.duration;
     }
 
-    internal override DAction copy()
+    public override DAction copy()
     {
         return new DActionResizeBy(size, duration).with(timingFunction);
     }
 
-    internal override void evaluateWithNode(DNode node, float dt)
+    public override void evaluateWithNode(DNode node, float dt)
     {
         base.evaluateWithNode(node, dt);
 

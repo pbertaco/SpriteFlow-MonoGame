@@ -19,21 +19,21 @@ namespace Dragon;
 
 public class DGame : Game
 {
-    internal static DGame current;
+    public static DGame current;
 
-    internal GraphicsDeviceManager graphicsDeviceManager;
-    internal SpriteBatch spriteBatch;
-    internal DScene scene;
-    internal SpriteSortMode sortMode = SpriteSortMode.Deferred;
-    internal BlendState blendState = null;
-    internal SamplerState samplerState = null;
-    internal DepthStencilState depthStencilState = null;
-    internal RasterizerState rasterizerState = new RasterizerState();
-    internal Effect effect = null;
-    internal Matrix? transformMatrix = null;
+    public GraphicsDeviceManager graphicsDeviceManager;
+    public SpriteBatch spriteBatch;
+    public DScene scene;
+    public SpriteSortMode sortMode = SpriteSortMode.Deferred;
+    public BlendState blendState = null;
+    public SamplerState samplerState = null;
+    public DepthStencilState depthStencilState = null;
+    public RasterizerState rasterizerState = new RasterizerState();
+    public Effect effect = null;
+    public Matrix? transformMatrix = null;
 
-    internal static float currentTime;
-    internal static float elapsedTime;
+    public static float currentTime;
+    public static float elapsedTime;
 
     DInputManager inputManager;
     Texture2D texture;
@@ -42,7 +42,7 @@ public class DGame : Game
     Vector2 sizeClientBounds => new(Window.ClientBounds.Width, Window.ClientBounds.Height);
     Vector2 sizeCurrentDisplayMode => new(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height);
 
-    internal DGame(DScene scene)
+    public DGame(DScene scene)
     {
         this.scene = scene;
         graphicsDeviceManager = new GraphicsDeviceManager(this);
@@ -90,7 +90,7 @@ public class DGame : Game
         texture.Dispose();
     }
 
-    internal void presentScene(DScene scene)
+    public void presentScene(DScene scene)
     {
         DConsole.WriteLine(this, $"presentScene: {scene}");
         this.scene = scene;
@@ -106,7 +106,7 @@ public class DGame : Game
         updateSceneSize();
     }
 
-    internal void updateSceneSize()
+    public void updateSceneSize()
     {
         scene.updateSize(this, sizeClientBounds);
     }

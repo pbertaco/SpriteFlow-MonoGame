@@ -2,27 +2,27 @@
 
 public class DNode
 {
-    internal Vector2 position;
-    internal float rotation;
-    internal Vector2 scale;
-    internal float alpha;
-    internal bool hidden;
-    internal DNode parent;
-    internal List<DNode> children;
+    public Vector2 position;
+    public float rotation;
+    public Vector2 scale;
+    public float alpha;
+    public bool hidden;
+    public DNode parent;
+    public List<DNode> children;
 
-    internal Vector2 drawPosition;
-    internal float drawRotation;
-    internal Vector2 drawScale;
-    internal float drawAlpha;
+    public Vector2 drawPosition;
+    public float drawRotation;
+    public Vector2 drawScale;
+    public float drawAlpha;
 
-    internal static Random random = new();
+    public static Random random = new();
 
-    internal Dictionary<string, DAction> actions;
-    internal List<string> actionsToRemove;
+    public Dictionary<string, DAction> actions;
+    public List<string> actionsToRemove;
 
-    internal bool userInteractionEnabled;
+    public bool userInteractionEnabled;
 
-    internal DNode()
+    public DNode()
     {
         scale = Vector2.One;
         alpha = 1;
@@ -31,7 +31,7 @@ public class DNode
         actionsToRemove = new List<string>();
     }
 
-    internal virtual void update()
+    public virtual void update()
     {
         for (int i = children.Count - 1; i >= 0; i--)
         {
@@ -39,7 +39,7 @@ public class DNode
         }
     }
 
-    internal virtual void beforeDraw(Vector2 currentPosition, float currentRotation, Vector2 currentScale, float currentAlpha)
+    public virtual void beforeDraw(Vector2 currentPosition, float currentRotation, Vector2 currentScale, float currentAlpha)
     {
         drawPosition = currentPosition + (position.rotateBy(currentRotation) * currentScale);
         drawRotation = currentRotation + rotation;
@@ -47,7 +47,7 @@ public class DNode
         drawAlpha = currentAlpha * alpha;
     }
 
-    internal void drawChildren()
+    public void drawChildren()
     {
         foreach (DNode node in children)
         {
@@ -55,7 +55,7 @@ public class DNode
         }
     }
 
-    internal virtual void draw(Vector2 currentPosition, float currentRotation, Vector2 currentScale, float currentAlpha)
+    public virtual void draw(Vector2 currentPosition, float currentRotation, Vector2 currentScale, float currentAlpha)
     {
         if (hidden || currentAlpha <= 0.01f)
         {
@@ -66,28 +66,28 @@ public class DNode
         drawChildren();
     }
 
-    internal virtual T addChild<T>(T node) where T : DNode
+    public virtual T addChild<T>(T node) where T : DNode
     {
         children.Add(node);
         node.setParent(this);
         return node;
     }
 
-    internal virtual T addChild<T>(T node, Vector2 position) where T : DNode
+    public virtual T addChild<T>(T node, Vector2 position) where T : DNode
     {
         addChild(node);
         node.position = position;
         return node;
     }
 
-    internal virtual T insertChild<T>(T node, int index) where T : DNode
+    public virtual T insertChild<T>(T node, int index) where T : DNode
     {
         children.Insert(index, node);
         node.setParent(this);
         return node;
     }
 
-    internal virtual T insertChild<T>(T node, Vector2 position, int index) where T : DNode
+    public virtual T insertChild<T>(T node, Vector2 position, int index) where T : DNode
     {
         insertChild(node, index);
         node.position = position;
@@ -120,7 +120,7 @@ public class DNode
         }
     }
 
-    internal void removeAllChildren(bool recursive = true)
+    public void removeAllChildren(bool recursive = true)
     {
         for (int i = children.Count - 1; i >= 0; i--)
         {
@@ -133,7 +133,7 @@ public class DNode
         }
     }
 
-    internal virtual void removeFromParent(bool recursive = true)
+    public virtual void removeFromParent(bool recursive = true)
     {
         if (parent != null)
         {
@@ -154,7 +154,7 @@ public class DNode
         node.addChild(this);
     }
 
-    internal virtual void touchDown(DTouch touch)
+    public virtual void touchDown(DTouch touch)
     {
         if (userInteractionEnabled && !hidden)
         {
@@ -171,7 +171,7 @@ public class DNode
         }
     }
 
-    internal virtual void touchMoved(DTouch touch)
+    public virtual void touchMoved(DTouch touch)
     {
         if (userInteractionEnabled && !hidden)
         {
@@ -188,7 +188,7 @@ public class DNode
         }
     }
 
-    internal virtual void touchUp(DTouch touch)
+    public virtual void touchUp(DTouch touch)
     {
         if (userInteractionEnabled && !hidden)
         {
@@ -205,22 +205,22 @@ public class DNode
         }
     }
 
-    internal static string nextActionKey()
+    public static string nextActionKey()
     {
         return $"{DGame.currentTime}{random.NextDouble()}";
     }
 
-    internal void run(DAction action)
+    public void run(DAction action)
     {
         run(action, nextActionKey());
     }
 
-    internal void run(IEnumerable<DAction> actionList)
+    public void run(IEnumerable<DAction> actionList)
     {
         run(DAction.sequence(actionList), nextActionKey());
     }
 
-    internal void run(DAction action, string key)
+    public void run(DAction action, string key)
     {
         DAction copy = action.copy();
         copy.runOnNode(this);
@@ -235,37 +235,37 @@ public class DNode
         }
     }
 
-    internal void run(IEnumerable<DAction> actionList, string key)
+    public void run(IEnumerable<DAction> actionList, string key)
     {
         run(DAction.sequence(actionList), key);
     }
 
-    internal void run(DAction action, Action completionBlock)
+    public void run(DAction action, Action completionBlock)
     {
         run(DAction.sequence(new List<DAction>() { action, DAction.run(completionBlock) }));
     }
 
-    internal bool hasActions()
+    public bool hasActions()
     {
         return actions.Count > 0;
     }
 
-    internal DAction actionForKey(string key)
+    public DAction actionForKey(string key)
     {
         return actions[key];
     }
 
-    internal void removeActionForKey(string key)
+    public void removeActionForKey(string key)
     {
         actions.Remove(key);
     }
 
-    internal void removeAllActions()
+    public void removeAllActions()
     {
         actions.Clear();
     }
 
-    internal void evaluateActions(float dt)
+    public void evaluateActions(float dt)
     {
         foreach (KeyValuePair<string, DAction> keyValuePair in actions)
         {
@@ -299,12 +299,12 @@ public class DNode
         }
     }
 
-    internal void afterDelay(float duration, Action block)
+    public void afterDelay(float duration, Action block)
     {
         run(DAction.sequence(new List<DAction>() { DAction.waitForDuration(duration), DAction.run(block) }));
     }
 
-    internal void bringToFront()
+    public void bringToFront()
     {
         if (parent != null)
         {

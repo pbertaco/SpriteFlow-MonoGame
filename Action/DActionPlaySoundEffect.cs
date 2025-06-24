@@ -14,7 +14,7 @@ public class DActionPlaySoundEffect : DAction
         }
     }
 
-    internal override void runOnNode(DNode node)
+    public override void runOnNode(DNode node)
     {
         soundEffect.Play();
     }

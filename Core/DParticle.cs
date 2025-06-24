@@ -2,15 +2,15 @@
 
 public class DParticle
 {
-    internal Vector2 position;
-    internal float speedX;
-    internal float speedY;
-    internal float alpha;
-    internal float scale;
-    internal float birthTime;
-    internal float lifetime;
+    public Vector2 position;
+    public float speedX;
+    public float speedY;
+    public float alpha;
+    public float scale;
+    public float birthTime;
+    public float lifetime;
 
-    internal void update(float dt, float xAcceleration, float yAcceleration, float particleAlphaSpeed, float particleScaleSpeed)
+    public void update(float dt, float xAcceleration, float yAcceleration, float particleAlphaSpeed, float particleScaleSpeed)
     {
         speedX += xAcceleration * dt;
         speedY += yAcceleration * dt;

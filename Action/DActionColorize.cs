@@ -12,12 +12,12 @@ public class DActionColorize : DAction
         this.colorBlendFactor = colorBlendFactor;
     }
 
-    internal override DAction copy()
+    public override DAction copy()
     {
         return new DActionColorize(color, colorBlendFactor, duration).with(timingFunction);
     }
 
-    internal override void runOnNode(DNode node)
+    public override void runOnNode(DNode node)
     {
         DSpriteNode spriteNode = (DSpriteNode)node;
 
@@ -29,7 +29,7 @@ public class DActionColorize : DAction
         startColor = spriteNode.color;
     }
 
-    internal override void evaluateWithNode(DNode node, float dt)
+    public override void evaluateWithNode(DNode node, float dt)
     {
         base.evaluateWithNode(node, dt);
 

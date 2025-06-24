@@ -5,18 +5,18 @@ public class DActionSetTexture : DAction
     Texture2D texture;
     bool resize;
 
-    internal DActionSetTexture(Texture2D texture, bool resize) : base(0)
+    public DActionSetTexture(Texture2D texture, bool resize) : base(0)
     {
         this.texture = texture;
         this.resize = resize;
     }
 
-    internal override DAction copy()
+    public override DAction copy()
     {
         return new DActionSetTexture(texture, resize);
     }
 
-    internal override void runOnNode(DNode node)
+    public override void runOnNode(DNode node)
     {
         DSpriteNode spriteNode = (DSpriteNode)node;
 

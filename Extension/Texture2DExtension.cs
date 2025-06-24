@@ -2,19 +2,19 @@
 
 class Self
 {
-    internal static List<string> textureNames = new();
-    internal static Dictionary<string, Texture2D> shadowDictionary = new();
+    public static List<string> textureNames = new();
+    public static Dictionary<string, Texture2D> shadowDictionary = new();
 }
 
 static class Texture2DExtension
 {
 
-    internal static Vector2 size(this Texture2D texture)
+    public static Vector2 size(this Texture2D texture)
     {
         return new Vector2(texture.Width, texture.Height);
     }
 
-    internal static Texture2D shadow(this Texture2D self)
+    public static Texture2D shadow(this Texture2D self)
     {
         string key = self.Name;
 
@@ -52,7 +52,7 @@ static class Texture2DExtension
 
         return texture;
     }
-    internal static bool convert(this Texture2D self, IEnumerable<Color> colors)
+    public static bool convert(this Texture2D self, IEnumerable<Color> colors)
     {
         if (Self.textureNames.Contains(self.Name))
         {

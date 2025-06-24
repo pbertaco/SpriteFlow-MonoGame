@@ -5,70 +5,70 @@ public class DEmitterNode : DSpriteNode
     List<DParticle> particles;
 
     // Determining When Particles Are Created
-    internal float particleBirthRate; // The rate at which new particles are created.
-    internal int numParticlesToEmit; // The number of particles the emitter should emit before stopping.
+    public float particleBirthRate; // The rate at which new particles are created.
+    public int numParticlesToEmit; // The number of particles the emitter should emit before stopping.
     // ParticleRenderOrder particleRenderOrder; // The order in which the emitter’s particles are rendered.
 
     // Defining Which Node Emits Particles
-    internal DNode targetNode; // The target node which renders the emitter’s particles.
+    public DNode targetNode; // The target node which renders the emitter’s particles.
 
     // Determining a Particle Lifetime
-    internal float particleLifetime; // The average lifetime of a particle, in seconds.
-    internal float particleLifetimeRange; // The range of allowed random values for a particle’s lifetime.
+    public float particleLifetime; // The average lifetime of a particle, in seconds.
+    public float particleLifetimeRange; // The range of allowed random values for a particle’s lifetime.
 
     // Determining a Particle’s Initial Position
-    internal Vector2 particlePosition; // The average starting position for a particle.
-    internal Vector2 particlePositionRange; // The range of allowed random values for a particle’s position.
-    internal float particleZPosition; // The average starting depth of a particle.
+    public Vector2 particlePosition; // The average starting position for a particle.
+    public Vector2 particlePositionRange; // The range of allowed random values for a particle’s position.
+    public float particleZPosition; // The average starting depth of a particle.
 
     // Determining a Particle’s Velocity and Acceleration
-    internal float particleSpeed; // The average initial speed of a new particle in points per second.
-    internal float particleSpeedRange; // The range of allowed random values for a particle’s initial speed.
-    internal float emissionAngle; // The average initial direction of a particle, expressed as an angle in radians.
-    internal float emissionAngleRange; // The range of allowed random values for a particle’s initial direction, expressed as an angle in radians.
-    internal float xAcceleration; // The acceleration to apply to a particle’s horizontal velocity.
-    internal float yAcceleration; // The acceleration to apply to a particle’s vertical velocity.
+    public float particleSpeed; // The average initial speed of a new particle in points per second.
+    public float particleSpeedRange; // The range of allowed random values for a particle’s initial speed.
+    public float emissionAngle; // The average initial direction of a particle, expressed as an angle in radians.
+    public float emissionAngleRange; // The range of allowed random values for a particle’s initial direction, expressed as an angle in radians.
+    public float xAcceleration; // The acceleration to apply to a particle’s horizontal velocity.
+    public float yAcceleration; // The acceleration to apply to a particle’s vertical velocity.
 
     // Determining a Particle’s Rotation
-    internal float particleRotation; //The average initial rotation of a particle, expressed as an angle in radians.
-    internal float particleRotationRange; // The range of allowed random values for a particle’s initial rotation, expressed as an angle in radians.
-    internal float particleRotationSpeed; // The speed at which a particle rotates, expressed in radians per second.
+    public float particleRotation; //The average initial rotation of a particle, expressed as an angle in radians.
+    public float particleRotationRange; // The range of allowed random values for a particle’s initial rotation, expressed as an angle in radians.
+    public float particleRotationSpeed; // The speed at which a particle rotates, expressed in radians per second.
 
     // Determining a Particle’s Scale Factor
     // particleScaleSequence: KeyframeSequence? // The sequence used to specify the scale factor of a particle over its lifetime.
-    internal float particleScale = 1; // The average initial scale factor of a particle.
-    internal float particleScaleRange; // The range of allowed random values for a particle’s initial scale.
-    internal float particleScaleSpeed; // The rate at which a particle’s scale factor changes per second.
+    public float particleScale = 1; // The average initial scale factor of a particle.
+    public float particleScaleRange; // The range of allowed random values for a particle’s initial scale.
+    public float particleScaleSpeed; // The rate at which a particle’s scale factor changes per second.
 
     // Setting a Particle’s Texture and Size
-    internal Texture2D particleTexture { get => texture; set => texture = value; } // The texture to use to render a particle.
-    internal Vector2 particleSize; // The starting size of each particle.
+    public Texture2D particleTexture { get => texture; set => texture = value; } // The texture to use to render a particle.
+    public Vector2 particleSize; // The starting size of each particle.
 
     // Configuring Particle Color
     // particleColorSequence: KeyframeSequence? // The sequence used to specify the color components of a particle over its lifetime.
-    internal Color particleColor { get => color; set => color = value; } // The average initial color for a particle.
-    internal float particleColorAlphaRange; // The range of allowed random values for the alpha component of a particle’s initial color.
-    internal float particleColorBlueRange; // The range of allowed random values for the blue component of a particle’s initial color.
-    internal float particleColorGreenRange; // The range of allowed random values for the green component of a particle’s initial color.
-    internal float particleColorRedRange; // The range of allowed random values for the red component of a particle’s initial color.
-    internal float particleColorAlphaSpeed; // The rate at which the alpha component of a particle’s color changes per second.
-    internal float particleColorBlueSpeed; // The rate at which the blue component of a particle’s color changes per second.
-    internal float particleColorGreenSpeed; // The rate at which the green component of a particle’s color changes per second.
-    internal float particleColorRedSpeed; // The rate at which the red component of a particle’s color changes per second.
+    public Color particleColor { get => color; set => color = value; } // The average initial color for a particle.
+    public float particleColorAlphaRange; // The range of allowed random values for the alpha component of a particle’s initial color.
+    public float particleColorBlueRange; // The range of allowed random values for the blue component of a particle’s initial color.
+    public float particleColorGreenRange; // The range of allowed random values for the green component of a particle’s initial color.
+    public float particleColorRedRange; // The range of allowed random values for the red component of a particle’s initial color.
+    public float particleColorAlphaSpeed; // The rate at which the alpha component of a particle’s color changes per second.
+    public float particleColorBlueSpeed; // The rate at which the blue component of a particle’s color changes per second.
+    public float particleColorGreenSpeed; // The rate at which the green component of a particle’s color changes per second.
+    public float particleColorRedSpeed; // The rate at which the red component of a particle’s color changes per second.
 
     // Determining How the Particle Texture Is Blended with the Particle Color
     // particleColorBlendFactorSequence: KeyframeSequence? // The sequence used to specify the color blend factor of a particle over its lifetime.
-    internal float particleColorBlendFactor; // The average starting value for the color blend factor.
-    internal float particleColorBlendFactorRange; // The range of allowed random values for a particle’s starting color blend factor.
-    internal float particleColorBlendFactorSpeed; // The rate at which the color blend factor changes per second.
+    public float particleColorBlendFactor; // The average starting value for the color blend factor.
+    public float particleColorBlendFactorRange; // The range of allowed random values for a particle’s starting color blend factor.
+    public float particleColorBlendFactorSpeed; // The rate at which the color blend factor changes per second.
 
     // Blending Particles with the Framebuffer
-    internal BlendState particleBlendMode { get => blendState; set => blendState = value; } // The blending mode used to blend particles into the framebuffer.
+    public BlendState particleBlendMode { get => blendState; set => blendState = value; } // The blending mode used to blend particles into the framebuffer.
 
     // particleAlphaSequence: KeyframeSequence? // The sequence used to specify the alpha value of a particle over its lifetime.
-    internal float particleAlpha = 1; // The average starting alpha value for a particle.
-    internal float particleAlphaRange; // The range of allowed random values for a particle’s starting alpha value.
-    internal float particleAlphaSpeed; // The rate at which the alpha value of a particle changes per second.
+    public float particleAlpha = 1; // The average starting alpha value for a particle.
+    public float particleAlphaRange; // The range of allowed random values for a particle’s starting alpha value.
+    public float particleAlphaSpeed; // The rate at which the alpha value of a particle changes per second.
 
     // Adding an Action to Particles
     // particleAction: Action? // Specifies an action executed by new particles.
@@ -84,7 +84,7 @@ public class DEmitterNode : DSpriteNode
         particles = new List<DParticle>(numParticlesToEmit);
     }
 
-    internal override void update()
+    public override void update()
     {
         float currentTime = DGame.currentTime;
         float elapsedTime = DGame.elapsedTime;
@@ -137,7 +137,7 @@ public class DEmitterNode : DSpriteNode
         }
     }
 
-    internal override void draw(Vector2 currentPosition, float currentRotation, Vector2 currentScale, float currentAlpha)
+    public override void draw(Vector2 currentPosition, float currentRotation, Vector2 currentScale, float currentAlpha)
     {
         if (hidden || currentAlpha <= 0.01f)
         {

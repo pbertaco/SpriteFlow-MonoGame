@@ -2,31 +2,31 @@
 
 public class DScene : DNode
 {
-    internal Vector2 size;
-    internal Color backgroundColor;
+    public Vector2 size;
+    public Color backgroundColor;
 
-    internal Vector2 currentPosition;
-    internal Vector2 currentScale;
+    public Vector2 currentPosition;
+    public Vector2 currentScale;
 
-    internal bool scissorTestEnable;
+    public bool scissorTestEnable;
 
-    internal DScene(Vector2? size = null) : base()
+    public DScene(Vector2? size = null) : base()
     {
         this.size = size ?? new Vector2(960, 540);
         backgroundColor = Color.CornflowerBlue;
         userInteractionEnabled = true;
     }
 
-    internal virtual void load()
+    public virtual void load()
     {
     }
 
-    internal void draw()
+    public void draw()
     {
         draw(currentPosition, 0, currentScale, 1);
     }
 
-    internal void updateSize(DGame game, Vector2 viewSize)
+    public void updateSize(DGame game, Vector2 viewSize)
     {
         currentScale = new Vector2(Math.Min(viewSize.X / size.X, viewSize.Y / size.Y));
         currentPosition = ((viewSize / currentScale) - size) * currentScale / 2f;
@@ -38,12 +38,12 @@ public class DScene : DNode
         }
     }
 
-    internal virtual void presentScene(DScene scene)
+    public virtual void presentScene(DScene scene)
     {
         DGame.current.presentScene(scene);
     }
 
-    internal virtual void addTexture2D(Texture2D texture)
+    public virtual void addTexture2D(Texture2D texture)
     {
     }
 }

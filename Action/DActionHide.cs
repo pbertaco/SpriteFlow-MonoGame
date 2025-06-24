@@ -2,16 +2,16 @@
 
 public class DActionHide : DAction
 {
-    internal DActionHide() : base(0)
+    public DActionHide() : base(0)
     {
     }
 
-    internal override DAction copy()
+    public override DAction copy()
     {
         return new DActionHide();
     }
 
-    internal override void runOnNode(DNode node)
+    public override void runOnNode(DNode node)
     {
         node.hidden = true;
     }

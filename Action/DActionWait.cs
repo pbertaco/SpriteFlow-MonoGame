@@ -7,7 +7,7 @@ public class DActionWait : DAction
     float durationBase;
     float durationRange;
 
-    internal DActionWait(float durationBase, float durationRange = 0) : base(0)
+    public DActionWait(float durationBase, float durationRange = 0) : base(0)
     {
         this.durationBase = durationBase;
         this.durationRange = durationRange;
@@ -21,7 +21,7 @@ public class DActionWait : DAction
         }
     }
 
-    internal override DAction copy()
+    public override DAction copy()
     {
         return new DActionWait(durationBase, durationRange);
     }
