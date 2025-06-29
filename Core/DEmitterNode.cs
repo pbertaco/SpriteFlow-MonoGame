@@ -4,10 +4,10 @@ public class DEmitterNode : DSpriteNode
 {
     List<DParticle> particles;
 
-    // Determining When Particles Are Created
+    //Determining When Particles Are Created
     public float particleBirthRate; // The rate at which new particles are created.
     public int numParticlesToEmit; // The number of particles the emitter should emit before stopping.
-    // ParticleRenderOrder particleRenderOrder; // The order in which the emitter’s particles are rendered.
+    //ParticleRenderOrder particleRenderOrder; // The order in which the emitter’s particles are rendered.
 
     // Defining Which Node Emits Particles
     public DNode targetNode; // The target node which renders the emitter’s particles.
@@ -35,7 +35,7 @@ public class DEmitterNode : DSpriteNode
     public float particleRotationSpeed; // The speed at which a particle rotates, expressed in radians per second.
 
     // Determining a Particle’s Scale Factor
-    // particleScaleSequence: KeyframeSequence? // The sequence used to specify the scale factor of a particle over its lifetime.
+    //particleScaleSequence: KeyframeSequence? // The sequence used to specify the scale factor of a particle over its lifetime.
     public float particleScale = 1; // The average initial scale factor of a particle.
     public float particleScaleRange; // The range of allowed random values for a particle’s initial scale.
     public float particleScaleSpeed; // The rate at which a particle’s scale factor changes per second.
@@ -45,7 +45,7 @@ public class DEmitterNode : DSpriteNode
     public Vector2 particleSize; // The starting size of each particle.
 
     // Configuring Particle Color
-    // particleColorSequence: KeyframeSequence? // The sequence used to specify the color components of a particle over its lifetime.
+    //particleColorSequence: KeyframeSequence? // The sequence used to specify the color components of a particle over its lifetime.
     public Color particleColor { get => color; set => color = value; } // The average initial color for a particle.
     public float particleColorAlphaRange; // The range of allowed random values for the alpha component of a particle’s initial color.
     public float particleColorBlueRange; // The range of allowed random values for the blue component of a particle’s initial color.
@@ -57,7 +57,7 @@ public class DEmitterNode : DSpriteNode
     public float particleColorRedSpeed; // The rate at which the red component of a particle’s color changes per second.
 
     // Determining How the Particle Texture Is Blended with the Particle Color
-    // particleColorBlendFactorSequence: KeyframeSequence? // The sequence used to specify the color blend factor of a particle over its lifetime.
+    //particleColorBlendFactorSequence: KeyframeSequence? // The sequence used to specify the color blend factor of a particle over its lifetime.
     public float particleColorBlendFactor; // The average starting value for the color blend factor.
     public float particleColorBlendFactorRange; // The range of allowed random values for a particle’s starting color blend factor.
     public float particleColorBlendFactorSpeed; // The rate at which the color blend factor changes per second.
@@ -65,20 +65,20 @@ public class DEmitterNode : DSpriteNode
     // Blending Particles with the Framebuffer
     public BlendState particleBlendMode { get => blendState; set => blendState = value; } // The blending mode used to blend particles into the framebuffer.
 
-    // particleAlphaSequence: KeyframeSequence? // The sequence used to specify the alpha value of a particle over its lifetime.
+    //particleAlphaSequence: KeyframeSequence? // The sequence used to specify the alpha value of a particle over its lifetime.
     public float particleAlpha = 1; // The average starting alpha value for a particle.
     public float particleAlphaRange; // The range of allowed random values for a particle’s starting alpha value.
     public float particleAlphaSpeed; // The rate at which the alpha value of a particle changes per second.
 
     // Adding an Action to Particles
-    // particleAction: Action? // Specifies an action executed by new particles.
+    //particleAction: Action? // Specifies an action executed by new particles.
 
     // Applying Physics Fields to the Particles
-    // fieldBitMask: UInt32 //A mask that defines which categories of physics fields can exert forces on the particles.
+    //fieldBitMask: UInt32 //A mask that defines which categories of physics fields can exert forces on the particles.
 
     float particleCounter;
 
-    public DEmitterNode(int numParticlesToEmit) : base("spark")
+    public DEmitterNode(int numParticlesToEmit) : base("missingTexture2D")
     {
         this.numParticlesToEmit = numParticlesToEmit;
         particles = new List<DParticle>(numParticlesToEmit);
@@ -98,7 +98,7 @@ public class DEmitterNode : DSpriteNode
                 numParticlesToEmit--;
                 particleCounter--;
 
-                DParticle particle = new DParticle();
+                DParticle particle = new();
                 particle.birthTime = currentTime;
 
                 Vector2 randomPosition = new(random.NextFloat() * particlePositionRange.X, random.NextFloat() * particlePositionRange.Y);

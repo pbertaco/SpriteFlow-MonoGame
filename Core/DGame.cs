@@ -1,4 +1,17 @@
-﻿global using Microsoft.Xna.Framework;
+﻿global using System;
+global using System.Collections.Generic;
+global using System.IO;
+global using System.Linq;
+global using System.Net.Http;
+global using System.Text;
+global using System.Text.Json;
+global using System.Text.Json.Serialization;
+global using System.Text.RegularExpressions;
+global using System.Threading;
+global using System.Threading.Tasks;
+global using Dragon;
+global using GameAnalyticsSDK.Net;
+global using Microsoft.Xna.Framework;
 global using Microsoft.Xna.Framework.Audio;
 global using Microsoft.Xna.Framework.Content;
 global using Microsoft.Xna.Framework.Design;
@@ -7,13 +20,6 @@ global using Microsoft.Xna.Framework.Graphics.PackedVector;
 global using Microsoft.Xna.Framework.Input;
 global using Microsoft.Xna.Framework.Input.Touch;
 global using Microsoft.Xna.Framework.Media;
-global using System;
-global using System.Collections.Generic;
-global using System.IO;
-global using System.Linq;
-global using System.Net.Http;
-global using System.Threading;
-global using System.Threading.Tasks;
 
 namespace Dragon;
 
@@ -28,7 +34,7 @@ public class DGame : Game
     public BlendState blendState = null;
     public SamplerState samplerState = null;
     public DepthStencilState depthStencilState = null;
-    public RasterizerState rasterizerState = new RasterizerState();
+    public RasterizerState rasterizerState = new();
     public Effect effect = null;
     public Matrix? transformMatrix = null;
 
@@ -42,13 +48,14 @@ public class DGame : Game
     Vector2 sizeClientBounds => new(Window.ClientBounds.Width, Window.ClientBounds.Height);
     Vector2 sizeCurrentDisplayMode => new(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height);
 
-    public DGame(DScene scene)
+    public DGame(DScene scene, string title)
     {
         this.scene = scene;
         graphicsDeviceManager = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
         inputManager = new DInputManager();
+        Window.Title = title;
         current = this;
     }
 
@@ -63,10 +70,13 @@ public class DGame : Game
         spriteBatch = new SpriteBatch(GraphicsDevice);
         base.LoadContent();
 
-#if iOS || Android || __IOS__
+#if iOS || Android
         graphicsDeviceManager.SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight;
-        toggleFullScreen();
 #else
+
+        //updatePreferredBackBuffer(sizeCurrentDisplayMode);
+        //toggleFullScreen();
+
         float maxSize = 1;
 
         while (scene.size.X < sizeCurrentDisplayMode.X / maxSize && scene.size.Y < sizeCurrentDisplayMode.Y / maxSize)
@@ -78,8 +88,7 @@ public class DGame : Game
 
         presentScene(scene);
         texture = new Texture2D(graphicsDeviceManager.GraphicsDevice, 1, 1);
-        texture.SetData(new[] { Color.White });
-        Window.Title = "Window.Title";
+        texture.SetData([Color.White]);
         Window.AllowUserResizing = true;
         TargetElapsedTime = TimeSpan.FromSeconds(1.0f / 60.0f);
     }
@@ -93,21 +102,26 @@ public class DGame : Game
     public void presentScene(DScene scene)
     {
         DConsole.WriteLine(this, $"presentScene: {scene}");
-        this.scene = scene;
+
         scene.load();
+
+        float duration = 0.25f;
+
+        if (this.scene != scene)
+        {
+            scene.alpha = 0;
+            scene.run(DAction.fadeAlphaTo(1, duration));
+            this.scene.run(DAction.afterDelay(duration, () => this.scene = scene));
+            this.scene.run(DAction.fadeAlphaTo(0, duration));
+        }
 
         if (rasterizerState.ScissorTestEnable != scene.scissorTestEnable)
         {
-            RasterizerState rasterizerState = new RasterizerState();
+            RasterizerState rasterizerState = new();
             rasterizerState.ScissorTestEnable = scene.scissorTestEnable;
             this.rasterizerState = rasterizerState;
         }
 
-        updateSceneSize();
-    }
-
-    public void updateSceneSize()
-    {
         scene.updateSize(this, sizeClientBounds);
     }
 
@@ -174,7 +188,7 @@ public class DGame : Game
         Window.ClientSizeChanged += (sender, e) =>
         {
             updatePreferredBackBuffer(sizeClientBounds);
-            updateSceneSize();
+            scene.updateSize(this, sizeClientBounds);
         };
     }
 

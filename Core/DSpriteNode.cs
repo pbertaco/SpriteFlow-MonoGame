@@ -3,8 +3,10 @@
 public class DSpriteNode : DNode
 {
     public static bool loadFromStream;
+    public static SamplerState defaultSamplerState = null;
 
     public BlendState blendState;
+    public SamplerState samplerState;
     protected SpriteEffects spriteEffects;
     protected float layerDepth;
 
@@ -137,6 +139,7 @@ public class DSpriteNode : DNode
         updateTextureScale();
         updateOrigin();
         updateColor();
+        samplerState = defaultSamplerState;
     }
 
     public override void beforeDraw(Vector2 currentPosition, float currentRotation, Vector2 currentScale, float currentAlpha)
@@ -145,9 +148,10 @@ public class DSpriteNode : DNode
 
         DGame game = DGame.current;
 
-        if (blendState != game.blendState)
+        if (blendState != game.blendState || samplerState != game.samplerState)
         {
             game.blendState = blendState;
+            game.samplerState = samplerState;
             game.spriteBatch.End();
             game.spriteBatch.Begin(game.sortMode, game.blendState, game.samplerState, game.depthStencilState, game.rasterizerState, game.effect, game.transformMatrix);
         }
@@ -168,19 +172,20 @@ public class DSpriteNode : DNode
     public Vector2 calculateScaleToFit(Vector2 size)
     {
         float scale = Math.Min(size.X / _size.X, size.Y / _size.Y);
-        return new Vector2(Math.Min(1, scale));
+        return new Vector2(scale);
     }
 
     public Vector2 calculateScaleToFill(Vector2 size)
     {
         float scale = Math.Max(size.X / _size.X, size.Y / _size.Y);
-        return new Vector2(Math.Max(1, scale));
+        return new Vector2(scale);
     }
 
     public void setScaleToFit(Vector2 size)
     {
         scale = calculateScaleToFit(size);
     }
+
     public void setScaleToFill(Vector2 size)
     {
         scale = calculateScaleToFill(size);
@@ -271,18 +276,20 @@ public class DSpriteNode : DNode
             {
                 if (loadFromStream)
                 {
-                    FileStream fileStream = new($"Content/png/{assetName}.png", FileMode.Open);
+                    string filePath = $"Content/png/{assetName}.xnb";
+#if macOS
+                    filePath = Path.Combine(AppContext.BaseDirectory, "Content", "png", $"{assetName}.xnb");
+#endif
+                    using FileStream fileStream = new(filePath, FileMode.Open, FileAccess.Read);
                     texture = Texture2D.FromStream(DGame.current.GraphicsDevice, fileStream);
-                    fileStream.Dispose();
                 }
                 else
                 {
-                    texture = DGame.current.Content.Load<Texture2D>($"Texture2D/{assetName}");
+                    texture = DGame.current.Content.Load<Texture2D>($"png/{assetName}");
                 }
 
                 texture.Name = assetName;
                 content[assetName] = texture;
-                DGame.current.scene.addTexture2D(texture);
             }
         }
         catch (Exception e)

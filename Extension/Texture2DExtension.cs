@@ -6,7 +6,7 @@ class Self
     public static Dictionary<string, Texture2D> shadowDictionary = new();
 }
 
-static class Texture2DExtension
+static class Texture2DExtensions
 {
 
     public static Vector2 size(this Texture2D texture)
@@ -75,7 +75,7 @@ static class Texture2DExtension
                 if (convertedColor.R != color.R || convertedColor.G != color.G || convertedColor.B != color.B)
                 {
                     convertedColor.A = color.A;
-                    data[i] = convertedColor;
+                    data[i] = Color.Magenta;
                     converted = true;
                 }
             }
@@ -91,5 +91,21 @@ static class Texture2DExtension
         Self.textureNames.Add(self.Name);
 
         return converted;
+    }
+
+    public static Color color(this Texture2D self, Vector2 position)
+    {
+        Color[] data = new Color[self.Width * self.Height];
+        self.GetData(data);
+
+        int x = (int)position.X;
+        int y = (int)position.Y;
+
+        if (x < 0 || x >= self.Width || y < 0 || y >= self.Height)
+        {
+            return Color.Transparent;
+        }
+
+        return data[x + (y * self.Width)];
     }
 }

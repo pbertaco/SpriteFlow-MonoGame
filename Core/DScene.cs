@@ -10,9 +10,9 @@ public class DScene : DNode
 
     public bool scissorTestEnable;
 
-    public DScene(Vector2? size = null) : base()
+    public DScene(Vector2? size = null)
     {
-        this.size = size ?? new Vector2(960, 540);
+        this.size = size ?? Vector2.One;
         backgroundColor = Color.CornflowerBlue;
         userInteractionEnabled = true;
     }

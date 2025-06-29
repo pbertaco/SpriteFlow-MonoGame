@@ -14,13 +14,13 @@ public class DActionRunBlock : DAction
         return new DActionRunBlock(block);
     }
 
-    public override void evaluateWithNode(DNode node, float dt)
-    {
-        base.evaluateWithNode(node, dt);
 
-        if (elapsed >= duration)
+    public override void runOnNode(DNode node)
+    {
+        if (block != null)
         {
             block();
+            block = null;
         }
     }
 }

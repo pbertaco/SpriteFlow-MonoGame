@@ -10,7 +10,6 @@ public class DTouch
     {
         this.position = position;
         lastPosition = position;
-        Console.WriteLine(position);
     }
 
     public void moved(Vector2 newPosition)
@@ -18,7 +17,6 @@ public class DTouch
         lastPosition = position;
         position = newPosition;
         delta = lastPosition - position;
-        Console.WriteLine(position);
     }
 
     public void up(Vector2 newPosition)
@@ -26,7 +24,6 @@ public class DTouch
         lastPosition = position;
         position = newPosition;
         delta = lastPosition - position;
-        Console.WriteLine(position);
     }
 
     public Vector2 locationIn(DNode node)

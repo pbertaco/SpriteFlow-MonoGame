@@ -1,6 +1,6 @@
 ﻿namespace Dragon;
 
-static class Vector2Extension
+static class Vector2Extensions
 {
     public static float distanceTo(this Vector2 self, Vector2 position)
     {
@@ -19,6 +19,11 @@ static class Vector2Extension
         float x = (self.X * cos) - (self.Y * sin);
         float y = (self.X * sin) + (self.Y * cos);
         return new Vector2(x, y);
+    }
+
+    public static Vector2 rotateBy(this Vector2 self, double rotation)
+    {
+        return self.rotateBy((float)rotation);
     }
 
     public static float angleTo(this Vector2 self, Vector2 position)

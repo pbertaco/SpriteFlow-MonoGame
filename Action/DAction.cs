@@ -1,6 +1,6 @@
 ﻿namespace Dragon;
 
-using DActionTimingFunction = Func<float, float, float, float, float>;
+using DActionTimingFunction = Func<float, float>;
 
 public class DAction
 {
@@ -13,7 +13,7 @@ public class DAction
 
     public DAction(float duration)
     {
-        if (duration <= 0)
+        if (duration <= 0.0f)
         {
             this.duration = 0.001f;
         }
@@ -126,7 +126,7 @@ public class DAction
 
     public static DAction repeatForever(DAction action)
     {
-        return new DActionRepeat(action, int.MaxValue);
+        return new DActionRepeat(action, 1000000);
     }
 
     public static DAction fadeIn(float duration)
@@ -174,16 +174,31 @@ public class DAction
         return new DActionAnimate(textures, duration, resize, restore);
     }
 
+    public static DAction animate(string texture, int firstFrame, int frameCount, float duration, bool resize = false, bool restore = false)
+    {
+        List<string> textures = new();
+
+        if (frameCount > 0)
+        {
+            for (int i = firstFrame; i < firstFrame + frameCount; i++)
+            {
+                textures.Add($"{texture}/{i}");
+            }
+        }
+
+        return animate(textures, duration, resize, restore);
+    }
+
     public static DAction animate(IEnumerable<string> textures, float duration, bool resize = false, bool restore = false)
     {
-        List<Texture2D> list = new List<Texture2D>();
+        List<Texture2D> list = new();
 
         foreach (string i in textures)
         {
             list.Add(DSpriteNode.loadTexture2D(i));
         }
 
-        return new DActionAnimate(list, duration, resize, restore);
+        return textures.Count() > 0 ? new DActionAnimate(list, duration, resize, restore) : waitForDuration(0.1f);
     }
 
     public static DAction playSoundEffect(string assetName, bool waitForCompletion = false)
@@ -231,6 +246,11 @@ public class DAction
         return new DActionRunBlock(block);
     }
 
+    public static DAction custom(float duration, Action<DNode, float> block)
+    {
+        return new DActionCustom(duration, block);
+    }
+
     public static DAction afterDelay(float delay, DAction action)
     {
         return sequence(new[] { waitForDuration(delay), action });
@@ -273,5 +293,16 @@ public class DAction
     public static DAction colorize(Color black, int v)
     {
         throw new NotImplementedException();
+    }
+
+    public static DAction screenShake(float amount, int oscillations, float duration)
+    {
+        Vector2 vector = new Vector2(amount).rotateBy(DNode.random.NextDouble(0.0, Math.PI * 2.0));
+
+        return group(new List<DAction>()
+        {
+            moveBy(-vector, duration / 2.0f).with(DEasing.cubicEaseOut),
+            moveBy(vector, duration).with(DEasing.createShakeFunction(oscillations))
+        });
     }
 }

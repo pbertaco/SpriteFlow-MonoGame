@@ -2,7 +2,7 @@
 
 public class DActionWait : DAction
 {
-    static Random random = new Random();
+    static Random random = new();
 
     float durationBase;
     float durationRange;
@@ -15,7 +15,7 @@ public class DActionWait : DAction
         float randomDuration = random.NextFloat() * durationRange;
         duration = this.durationBase - (durationRange / 2) + randomDuration;
 
-        if (duration <= 0)
+        if (duration <= 0.0f)
         {
             duration = 0.001f;
         }

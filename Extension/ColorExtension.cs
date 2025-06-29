@@ -1,6 +1,6 @@
 ﻿namespace Dragon;
 
-static class ColorExtension
+static class ColorExtensions
 {
     public static Color multiply(this Color self, Color other)
     {

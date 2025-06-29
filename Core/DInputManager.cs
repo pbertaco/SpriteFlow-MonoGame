@@ -4,14 +4,14 @@ public class DInputManager
 {
     Dictionary<int, DTouch> touches;
 
+    MouseState lastMouseState;
+
     public DInputManager()
     {
         touches = new Dictionary<int, DTouch>();
     }
 
-#if macOS || Windows
-    MouseState lastMouseState;
-
+#if Windows || macOS
     KeyboardState keyboardState;
     KeyboardState lastKeyboardState;
     public void update()
@@ -76,7 +76,7 @@ public class DInputManager
     }
 #endif
 
-#if iOS || Android || __IOS__
+#if iOS || Android
     public void update()
     {
         updateTouchPanel();

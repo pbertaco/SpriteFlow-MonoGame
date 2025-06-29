@@ -20,7 +20,7 @@ public class DActionRotateBy : DAction
     {
         base.evaluateWithNode(node, dt);
 
-        float t1 = timingFunction(elapsed / duration, 0, 1, 1) * duration;
+        float t1 = timingFunction(elapsed / duration) * duration;
 
         node.rotation += speed * (t1 - t0);
 

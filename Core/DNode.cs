@@ -33,9 +33,9 @@ public class DNode
 
     public virtual void update()
     {
-        for (int i = children.Count - 1; i >= 0; i--)
+        foreach (DNode node in children)
         {
-            children[i].update();
+            node.update();
         }
     }
 
@@ -80,6 +80,11 @@ public class DNode
         return node;
     }
 
+    public T addChild<T>(T node, float x, float y) where T : DNode
+    {
+        return addChild(node, new Vector2(x, y));
+    }
+
     public virtual T insertChild<T>(T node, int index) where T : DNode
     {
         children.Insert(index, node);
@@ -92,6 +97,11 @@ public class DNode
         insertChild(node, index);
         node.position = position;
         return node;
+    }
+
+    public T insertChild<T>(T node, float x, float y, int index) where T : DNode
+    {
+        return insertChild(node, new Vector2(x, y), index);
     }
 
     void setParent(DNode node)
@@ -267,8 +277,10 @@ public class DNode
 
     public void evaluateActions(float dt)
     {
-        foreach (KeyValuePair<string, DAction> keyValuePair in actions)
+        for (int i = 0; i < actions.Count(); i++)
         {
+            KeyValuePair<string, DAction> keyValuePair = actions.ElementAt(i);
+
             DAction action = keyValuePair.Value;
             action.evaluateWithNode(this, dt);
 
@@ -311,5 +323,15 @@ public class DNode
             parent.children.Remove(this);
             parent.children.Add(this);
         }
+    }
+
+    public static void playSound(string name)
+    {
+    }
+
+    public static void playMusic(string name, string key = "")
+    {
+        DMusic music = new(name);
+        music.play(key);
     }
 }

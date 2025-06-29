@@ -27,7 +27,7 @@ public class DActionResizeBy : DAction
             return;
         }
 
-        float t1 = timingFunction(elapsed / duration, 0, 1, 1) * duration;
+        float t1 = timingFunction(elapsed / duration) * duration;
         spriteNode.size += speed * (t1 - t0);
         t0 = t1;
     }

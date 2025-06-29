@@ -1,7 +1,12 @@
-﻿namespace Dragon;
+﻿
 
-public class DPlayerData
+public class DSave
 {
-    public virtual void newGame() { }
-    public virtual void updateModelVersion() { }
+    public virtual void newGame()
+    {
+    }
+
+    public virtual void updateModelVersion()
+    {
+    }
 }

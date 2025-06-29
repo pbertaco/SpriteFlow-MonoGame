@@ -1,6 +1,6 @@
 ﻿namespace Dragon;
 
-static class RamdomExtension
+static class RamdomExtensions
 {
     public static int NextInt(this Random self)
     {
@@ -9,12 +9,12 @@ static class RamdomExtension
 
     public static int NextInt(this Random self, int min, int max)
     {
-        return (int)Math.Round((self.NextDouble() * (max - min)) + min);
+        return min + (int)(self.NextDouble() * ((max - min) + 1));
     }
 
     public static int NextInt(this Random self, int min, int max, float luck)
     {
-        return (int)Math.Round((self.NextDouble(0, 1, luck) * (max - min)) + min);
+        return min + (int)(self.NextDouble(0, 1, luck) * ((max - min) + 1));
     }
 
     public static float NextFloat(this Random self)

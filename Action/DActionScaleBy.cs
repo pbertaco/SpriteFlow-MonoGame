@@ -20,7 +20,7 @@ public class DActionScaleBy : DAction
     {
         base.evaluateWithNode(node, dt);
 
-        float t1 = timingFunction(elapsed / duration, 0, 1, 1) * duration;
+        float t1 = timingFunction(elapsed / duration) * duration;
 
         node.scale += speed * (t1 - t0);
 

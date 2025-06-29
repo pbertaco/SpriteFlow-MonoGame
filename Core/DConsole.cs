@@ -1,53 +1,53 @@
 ﻿namespace Dragon;
 
-public class DConsole
-{
-    public static bool enabled = false;
+    public class DConsole
+    {
+        public static bool enabled = false;
 
     static List<Type> types = new();
 
-    public static void WriteLine(object sender, string text)
-    {
-        if (!enabled)
+        public static void WriteLine(object sender, string text)
         {
-            return;
-        }
-
-        Type type = sender.GetType();
-        bool allow = false;
-
-        foreach (Type i in types)
-        {
-            if (i.IsAssignableFrom(type))
+            if (!enabled)
             {
-                allow = true;
-                break;
+                return;
+            }
+
+            Type type = sender.GetType();
+            bool allow = false;
+
+            foreach (Type i in types)
+            {
+                if (i.IsAssignableFrom(type))
+                {
+                    allow = true;
+                    break;
+                }
+            }
+
+            if (allow)
+            {
+                Console.WriteLine(text);
             }
         }
 
-        if (allow)
+        public static void enable(Type type)
         {
-            Console.WriteLine(text);
-        }
-    }
+            if (types.Contains(type))
+            {
+                return;
+            }
 
-    public static void enable(Type type)
-    {
-        if (types.Contains(type))
-        {
-            return;
+            types.Add(type);
         }
 
-        types.Add(type);
-    }
-
-    public static void disable(Type type)
-    {
-        if (!types.Contains(type))
+        public static void disable(Type type)
         {
-            return;
-        }
+            if (!types.Contains(type))
+            {
+                return;
+            }
 
-        types.Remove(type);
+            types.Remove(type);
+        }
     }
-}

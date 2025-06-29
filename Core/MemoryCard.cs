@@ -1,158 +1,128 @@
-﻿using System.Reflection;
-using System.Text.Json;
+﻿namespace Dragon;
 
-namespace Dragon;
-
-public class MemoryCard<T> where T : DPlayerData, new()
+public class SaveManager<T> where T : DSave, new()
 {
-    public static MemoryCard<T> current;
+    public static SaveManager<T> current { get; set; }
 
-    public T data;
-    string fileName;
+    public T data { get; set; }
 
-    public MemoryCard(string fileName)
+    public SaveManager()
     {
         current = this;
-        loadGame(fileName);
     }
 
-    public void saveGame()
+    public bool saveGame()
     {
-        saveGame(fileName ?? DateTime.Now.ToString());
-    }
-
-    void saveGame(string newFileName)
-    {
-        fileName = newFileName;
+        bool success = false;
         string contents = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
-        File.WriteAllText(path(fileName), contents);
+
+        try
+        {
+            File.WriteAllText(DFileManager.path($"{DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss-fff")}.bin"), contents);
+            success = true;
+            removeDuplicateFiles();
+        }
+        catch (Exception)
+        {
+        }
+
+        return success;
     }
 
-    public void loadGame(string loadFileName)
+    public bool loadGame(string fileName)
     {
-        fileName = loadFileName;
-        string path = this.path(fileName);
+        bool success = false;
+        string file = DFileManager.path(fileName);
 
-        if (File.Exists(path))
+        if (File.Exists(file))
         {
-            string json = File.ReadAllText(path);
-            data = (T)JsonSerializer.Deserialize(json, typeof(T));
+            string json = File.ReadAllText(file);
+            data = JsonSerializer.Deserialize<T>(json) ?? new T();
             data.updateModelVersion();
+            success = true;
+        }
+
+        return success;
+    }
+
+    public string[] getFiles()
+    {
+        string gameFolderPath = DFileManager.getFolderPath();
+
+        string[] files = [];
+
+        if (Directory.Exists(gameFolderPath))
+        {
+            removeDuplicateFiles();
+            files = Directory.GetFiles(gameFolderPath, $"*.bin");
         }
         else
         {
-            data = new T();
-            data.newGame();
+            Directory.CreateDirectory(gameFolderPath);
         }
+
+        return files;
     }
 
-    public void delete(string fileName)
+    public bool continueGame()
     {
-        File.Delete(path(fileName));
-    }
+        bool success = false;
+        string gameFolderPath = DFileManager.getFolderPath();
 
-    public string path(string fileName, string extension = "")
-    {
-        if (extension.Length > 0)
+        if (Directory.Exists(gameFolderPath))
         {
-            return Path.Combine(defaultStorageFolder.Value, $"{fileName}.{extension}");
-        }
-        else
-        {
-            return Path.Combine(defaultStorageFolder.Value, fileName);
-        }
-    }
+            string[] files = getFiles(); ;
 
-    static readonly List<string> potentialStorageFolders = new()
-    {
-        Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-        Path.Combine(Directory.GetCurrentDirectory(), "Documents")
-    };
-
-    static readonly Lazy<string> defaultStorageFolder = new(() =>
-    {
-        if (tryGetUWPFolder(out string folder))
-        {
-            return folder;
-        }
-
-        foreach (string potentialFolder in potentialStorageFolders)
-        {
-            if (tryGetFolder(() => potentialFolder, out folder))
+            if (files.Length > 0)
             {
-                return folder;
-            }
-        }
+                Array.Sort(files, (x, y) => File.GetLastWriteTime(y).CompareTo(File.GetLastWriteTime(x)));
+                string lastFile = files[0];
+                success = loadGame(lastFile);
 
-        throw new InvalidOperationException();
-    });
-
-    static bool tryGetUWPFolder(out string folder) => tryGetFolder(() =>
-    {
-        Type applicationData = Type.GetType("Windows.Storage.ApplicationData, Windows, Version=255.255.255.255, Culture=neutral, PublicKeyToken=null, ContentType=WindowsRuntime");
-
-        if (applicationData == null)
-        {
-            return null;
-        }
-
-        PropertyInfo currentProperty = applicationData.GetProperty("Current", BindingFlags.Static | BindingFlags.Public);
-        PropertyInfo localFolderProperty = applicationData.GetProperty("LocalFolder", BindingFlags.Public | BindingFlags.Instance);
-        PropertyInfo pathProperty = localFolderProperty.PropertyType.GetProperty("Path", BindingFlags.Public | BindingFlags.Instance);
-        object currentApplicationData = currentProperty.GetValue(null);
-        object localFolder = localFolderProperty.GetValue(currentApplicationData);
-        return (string)pathProperty.GetValue(localFolder);
-    }, out folder);
-
-    static bool tryGetFolder(Func<string> getter, out string folder)
-    {
-        try
-        {
-            string result = getter();
-
-            if (result != null)
-            {
-                if (!Directory.Exists(result))
+                while (files.Length > 100)
                 {
-                    Directory.CreateDirectory(result);
-                }
-
-                if (isDirectoryWritable(result))
-                {
-                    folder = result;
-                    return true;
+                    string oldestFile = files[files.Length - 1];
+                    File.Delete(oldestFile);
+                    Array.Resize(ref files, files.Length - 1);
                 }
             }
         }
-        catch
-        {
-        }
 
-        folder = null;
-        return false;
+        return success;
     }
 
-    static bool isDirectoryWritable(string path)
+    void removeDuplicateFiles()
     {
-        if (string.IsNullOrEmpty(path))
+        string gameFolderPath = DFileManager.getFolderPath();
+        string[] files = Directory.GetFiles(gameFolderPath, $"*.bin");
+
+        Dictionary<string, List<string>> hashToFiles = new();
+
+        foreach (string file in files)
         {
-            return false;
+            string hash = DFileManager.getFileStringHash(file);
+
+            if (!hashToFiles.ContainsKey(hash))
+            {
+                hashToFiles[hash] = new List<string>();
+            }
+
+            hashToFiles[hash].Add(file);
         }
 
-        if (!Directory.Exists(path))
+        foreach (KeyValuePair<string, List<string>> entry in hashToFiles)
         {
-            return false;
-        }
+            List<string> fileList = entry.Value;
 
-        try
-        {
-            using (File.Create(Path.Combine(path, Path.GetRandomFileName()), 1, FileOptions.DeleteOnClose)) { }
+            if (fileList.Count > 1)
+            {
+                fileList.Sort((x, y) => File.GetLastWriteTime(y).CompareTo(File.GetLastWriteTime(x)));
 
-            return true;
-        }
-        catch
-        {
-            return false;
+                for (int i = 0; i < fileList.Count - 1; i++)
+                {
+                    File.Delete(fileList[i]);
+                }
+            }
         }
     }
 }

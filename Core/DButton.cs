@@ -2,13 +2,15 @@
 
 public class DButton : DControl
 {
-    public Action onTouchDownInside;
-    public Action onTouchUpInside;
-    public Action onTouchUpOutside;
-    public Action onTouchMovedInside;
-    public Action onTouchMovedOutside;
+    public static List<DButton> allButtons = new();
 
-    List<DTouch> touchList = new List<DTouch>();
+    public Action<DTouch> onTouchDownInside;
+    public Action<DTouch> onTouchUpInside;
+    public Action<DTouch> onTouchUpOutside;
+    public Action<DTouch> onTouchMovedInside;
+    public Action<DTouch> onTouchMovedOutside;
+
+    List<DTouch> touchList = new();
 
     DSpriteNode icon;
 
@@ -72,7 +74,7 @@ public class DButton : DControl
         if (userInteractionEnabled && contains(touch))
         {
             touchList.Add(touch);
-            onTouchDownInside?.Invoke();
+            onTouchDownInside?.Invoke(touch);
         }
     }
 
@@ -82,11 +84,11 @@ public class DButton : DControl
         {
             if (contains(touch))
             {
-                onTouchMovedInside?.Invoke();
+                onTouchMovedInside?.Invoke(touch);
             }
             else
             {
-                onTouchMovedOutside?.Invoke();
+                onTouchMovedOutside?.Invoke(touch);
             }
         }
     }
@@ -99,11 +101,11 @@ public class DButton : DControl
         {
             if (contains(touch))
             {
-                onTouchUpInside?.Invoke();
+                onTouchUpInside?.Invoke(touch);
             }
             else
             {
-                onTouchUpOutside?.Invoke();
+                onTouchUpOutside?.Invoke(touch);
             }
         }
     }
@@ -134,21 +136,21 @@ public class DButton : DControl
         string actionDownKey = nextActionKey();
         string actionUpKey = nextActionKey();
 
-        onTouchDownInside += () =>
+        onTouchDownInside += (touch) =>
         {
             target.removeActionForKey(actionDownKey);
             target.removeActionForKey(actionUpKey);
             target.run(actionDown, actionDownKey);
         };
 
-        onTouchUpInside += () =>
+        onTouchUpInside += (touch) =>
         {
             target.removeActionForKey(actionDownKey);
             target.removeActionForKey(actionUpKey);
             target.run(actionUp, actionUpKey);
         };
 
-        onTouchUpOutside += () =>
+        onTouchUpOutside += (touch) =>
         {
             target.removeActionForKey(actionDownKey);
             target.removeActionForKey(actionUpKey);
