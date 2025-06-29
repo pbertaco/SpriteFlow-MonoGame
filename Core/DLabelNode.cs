@@ -349,23 +349,6 @@ public class DLabelNode : DNode
         return key;
     }
 
-    public enum Language
-    {
-        English,
-        Spanish,
-        Portuguese,
-        French,
-        German,
-        Italian,
-        Russian,
-        Japanese,
-        SimplifiedChinese,
-        TraditionalChinese,
-        Korean,
-        Polish,
-        Turkish
-    }
-
     public static string getDisplayName(Language language)
     {
         switch (language)
