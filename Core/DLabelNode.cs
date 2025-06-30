@@ -175,9 +175,9 @@ public class DLabelNode : DNode
 
         try
         {
-            spriteFont = DGame.current.Content.Load<SpriteFont>($"spritefont/{assetName}");
+            spriteFont = DGame.current.Content.Load<SpriteFont>($"SpriteFont/{assetName}");
         }
-        catch (Exception)
+        catch (Exception e)
         {
             if (handleException)
             {
@@ -389,5 +389,15 @@ public class DLabelNode : DNode
             case Language.Turkish: return "tr.json";
             default: return language.ToString() + ".json";
         }
+    }
+
+    public static void setSampler(string fontName, SamplerState state)
+    {
+        samplerStateDictionary[loadSpriteFont(fontName)] = state;
+    }
+
+    public static void setDefault(Language lang, string fontName)
+    {
+        defaultSpriteFontDictionary[lang] = loadSpriteFont(fontName);
     }
 }

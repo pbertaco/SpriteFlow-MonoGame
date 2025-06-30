@@ -276,16 +276,16 @@ public class DSpriteNode : DNode
             {
                 if (loadFromStream)
                 {
-                    string filePath = $"Content/png/{assetName}.xnb";
+                    string filePath = $"Content/Texture2D/{assetName}.xnb";
 #if macOS
-                    filePath = Path.Combine(AppContext.BaseDirectory, "Content", "png", $"{assetName}.xnb");
+                    filePath = Path.Combine(AppContext.BaseDirectory, "Content", "Texture2D", $"{assetName}.xnb");
 #endif
                     using FileStream fileStream = new(filePath, FileMode.Open, FileAccess.Read);
                     texture = Texture2D.FromStream(DGame.current.GraphicsDevice, fileStream);
                 }
                 else
                 {
-                    texture = DGame.current.Content.Load<Texture2D>($"png/{assetName}");
+                    texture = DGame.current.Content.Load<Texture2D>($"Texture2D/{assetName}");
                 }
 
                 texture.Name = assetName;

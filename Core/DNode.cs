@@ -33,9 +33,9 @@ public class DNode
 
     public virtual void update()
     {
-        foreach (DNode node in children)
+        for (int i = children.Count - 1; i >= 0; i--)
         {
-            node.update();
+            children[i].update();
         }
     }
 

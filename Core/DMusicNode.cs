@@ -91,7 +91,7 @@ public class DMusic
 
             if (loadFromStream)
             {
-                string filePath = $"Content/mp3/{assetName}.mp3";
+                string filePath = $"Content/Song/{assetName}.mp3";
 
 #if macOS || iOS
                 filePath = Path.Combine(AppContext.BaseDirectory, "Content", "mp3", $"{assetName}.mp3");
@@ -102,7 +102,7 @@ public class DMusic
             }
             else
             {
-                song = DGame.current.Content.Load<Song>($"mp3/{assetName}");
+                song = DGame.current.Content.Load<Song>($"Song/{assetName}");
             }
 
             ContentCache[assetName] = song;
