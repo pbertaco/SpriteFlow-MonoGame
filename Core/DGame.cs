@@ -10,7 +10,6 @@ global using System.Text.RegularExpressions;
 global using System.Threading;
 global using System.Threading.Tasks;
 global using Dragon;
-global using GameAnalyticsSDK.Net;
 global using Microsoft.Xna.Framework;
 global using Microsoft.Xna.Framework.Audio;
 global using Microsoft.Xna.Framework.Content;
@@ -26,6 +25,7 @@ namespace Dragon;
 public class DGame : Game
 {
     public static DGame current;
+    public static string version = "1.0.0";
 
     public GraphicsDeviceManager graphicsDeviceManager;
     public SpriteBatch spriteBatch;

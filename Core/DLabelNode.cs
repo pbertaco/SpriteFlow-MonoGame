@@ -177,7 +177,7 @@ public class DLabelNode : DNode
         {
             spriteFont = DGame.current.Content.Load<SpriteFont>($"SpriteFont/{assetName}");
         }
-        catch (Exception e)
+        catch (Exception)
         {
             if (handleException)
             {
