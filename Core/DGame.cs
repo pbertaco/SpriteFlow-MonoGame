@@ -1,4 +1,14 @@
-﻿global using System;
+﻿global using Dragon;
+global using Microsoft.Xna.Framework;
+global using Microsoft.Xna.Framework.Audio;
+global using Microsoft.Xna.Framework.Content;
+global using Microsoft.Xna.Framework.Design;
+global using Microsoft.Xna.Framework.Graphics;
+global using Microsoft.Xna.Framework.Graphics.PackedVector;
+global using Microsoft.Xna.Framework.Input;
+global using Microsoft.Xna.Framework.Input.Touch;
+global using Microsoft.Xna.Framework.Media;
+global using System;
 global using System.Collections.Generic;
 global using System.IO;
 global using System.Linq;
@@ -9,16 +19,6 @@ global using System.Text.Json.Serialization;
 global using System.Text.RegularExpressions;
 global using System.Threading;
 global using System.Threading.Tasks;
-global using Dragon;
-global using Microsoft.Xna.Framework;
-global using Microsoft.Xna.Framework.Audio;
-global using Microsoft.Xna.Framework.Content;
-global using Microsoft.Xna.Framework.Design;
-global using Microsoft.Xna.Framework.Graphics;
-global using Microsoft.Xna.Framework.Graphics.PackedVector;
-global using Microsoft.Xna.Framework.Input;
-global using Microsoft.Xna.Framework.Input.Touch;
-global using Microsoft.Xna.Framework.Media;
 
 namespace Dragon;
 
