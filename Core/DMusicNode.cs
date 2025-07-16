@@ -10,7 +10,7 @@ public class DMusic
     public Song song;
     public string key;
 
-    static float volumeScale = 0.05f;
+    static float volumeScale = 0.1f;
     static float _volume;
     public static float volume
     {
@@ -19,10 +19,7 @@ public class DMusic
         {
             _volume = MathHelper.Clamp(value, 0f, 1f);
 #if Windows || macOS
-            if (MediaPlayer.Volume != _volume)
-            {
-                MediaPlayer.Volume = _volume * volumeScale;
-            }
+            MediaPlayer.Volume = _volume * volumeScale;
 #endif
         }
     }
