@@ -1,28 +1,16 @@
-using Core;
-using System;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
 namespace Dragon;
 
-public class AchievementManager
+public class AchievementManager<T> where T : Achievement, new()
 {
     Dictionary<string, Achievement> dictionary = new();
 
-    public static string steamUserName;
-    public static AchievementManager current { get; set; }
-
-    public AchievementManager()
+    public void load<N>() where N : T, new()
     {
-        current = this;
-    }
-
-    public void load<T>() where T : Achievement, new()
-    {
-        T achievement = new();
+        N achievement = new();
 
         bool unlocked = false;
 
-        if (!string.IsNullOrEmpty(steamUserName))
+        if (!string.IsNullOrEmpty(Achievement.steamUserName))
         {
             string pchName = achievement.id.ToString();
             SteamUserStats.GetAchievement(pchName, out unlocked);
@@ -38,7 +26,7 @@ public class AchievementManager
 
     public void unlock(Achievement achievement)
     {
-        if (!string.IsNullOrEmpty(steamUserName))
+        if (!string.IsNullOrEmpty(Achievement.steamUserName))
         {
             string pchName = achievement.id.ToString();
             SteamUserStats.SetAchievement(pchName);
@@ -48,31 +36,26 @@ public class AchievementManager
         achievement.unlocked = true;
     }
 
-    public static void update(Func<Achievement, bool> action)
+    public void update(Func<T, bool> action)
     {
-        if (current == null)
-        {
-            return;
-        }
-
-        foreach (Achievement achievement in current.dictionary.Values)
+        foreach (T achievement in dictionary.Values)
         {
             if (!achievement.unlocked && action(achievement))
             {
-                current.unlock(achievement);
+                unlock(achievement);
             }
         }
     }
 }
 
-public class Achievement
+public static class QuestPersistence
 {
-    public string id { get => GetType().Name; }
-    public bool unlocked;
+    public static bool getQuestCompletionStatus(string questId)
+    {
+        return false;
+    }
 
-    public virtual bool takeDamage(Character self, Character enemy, int damage, bool critical) => false;
-    public virtual bool addItem(Item item) => false;
-    public virtual bool upgradeItem(Item item) => false;
-    public virtual bool levelUp(Character character) => false;
-    public virtual bool sell(PlayerProgress data, ItemNode itemNode, int price) => false;
+    public static void setQuestCompleted(string questId)
+    {
+    }
 }
