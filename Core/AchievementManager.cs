@@ -47,15 +47,3 @@ public class AchievementManager<T> where T : Achievement, new()
         }
     }
 }
-
-public static class QuestPersistence
-{
-    public static bool getQuestCompletionStatus(string questId)
-    {
-        return false;
-    }
-
-    public static void setQuestCompleted(string questId)
-    {
-    }
-}

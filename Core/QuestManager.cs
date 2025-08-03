@@ -10,7 +10,7 @@ public class QuestManager<T> where T : Quest, new()
 
         bool completed = false;
 
-        completed = QuestPersistence.getQuestCompletionStatus(quest.id);
+        completed = getQuestCompletionStatus(quest.id);
 
         quest.completed = completed;
 
@@ -20,20 +20,24 @@ public class QuestManager<T> where T : Quest, new()
         }
     }
 
-    public void complete(Quest quest)
-    {
-        QuestPersistence.setQuestCompleted(quest.id);
-        quest.completed = true;
-    }
-
     public void update(Func<T, bool> action)
     {
         foreach (T quest in dictionary.Values)
         {
             if (!quest.completed && action(quest))
             {
-                complete(quest);
+                setQuestCompleted(quest.id);
+                quest.completed = true;
             }
         }
+    }
+
+    public virtual void setQuestCompleted(string id)
+    {
+    }
+
+    public virtual bool getQuestCompletionStatus(string id)
+    {
+        return false;
     }
 }
