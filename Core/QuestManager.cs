@@ -8,13 +8,10 @@ public class QuestManager<T> where T : Quest, new()
     {
         N quest = new();
 
-        bool completed = false;
+        quest.started = getQuestStarted(quest.id);
+        quest.completed = getQuestCompleted(quest.id);
 
-        completed = getQuestCompletionStatus(quest.id);
-
-        quest.completed = completed;
-
-        if (!quest.completed)
+        if (quest.started && !quest.completed)
         {
             dictionary[quest.id] = quest;
         }
@@ -24,20 +21,43 @@ public class QuestManager<T> where T : Quest, new()
     {
         foreach (T quest in dictionary.Values)
         {
-            if (!quest.completed && action(quest))
+            if (quest.started && quest.completed)
             {
-                setQuestCompleted(quest.id);
-                quest.completed = true;
+                continue;
+            }
+
+            if (quest.started)
+            {
+                if (action(quest))
+                {
+                    quest.completed = true;
+                    setQuestCompleted(quest.id);
+                }
+            }
+            else
+            {
+                if (action(quest))
+                {
+                    quest.started = true;
+                    setQuestStarted(quest.id);
+                }
             }
         }
     }
 
-    public virtual void setQuestCompleted(string id)
-    {
-    }
+    public virtual void setQuestStarted(string id) { }
 
-    public virtual bool getQuestCompletionStatus(string id)
-    {
-        return false;
-    }
+    public virtual bool getQuestStarted(string id) => false;
+
+    public virtual void setQuestCompleted(string id) { }
+
+    public virtual bool getQuestCompleted(string id) => false;
+}
+
+
+public class Quest
+{
+    public string id { get => GetType().Name; }
+    public bool started;
+    public bool completed;
 }
