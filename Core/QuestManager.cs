@@ -4,11 +4,11 @@ public class QuestManager<T> where T : Quest, new()
 {
     Dictionary<string, Quest> dictionary = new();
 
-    public void load<N>() where N : T, new()
+    public void load<N>(bool start = false) where N : T, new()
     {
         N quest = new();
 
-        quest.started = getQuestStarted(quest.id);
+        quest.started = start || getQuestStarted(quest.id);
         quest.completed = getQuestCompleted(quest.id);
 
         if (quest.started && !quest.completed)
