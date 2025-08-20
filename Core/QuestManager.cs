@@ -51,11 +51,6 @@ public class QuestManager<T> where T : Quest, new()
 
         T quest = (T)Activator.CreateInstance(type)!;
 
-        if (parentByType.TryGetValue(type, out Type parentT))
-        {
-            quest.parentQuest = parentT;
-        }
-
         quest.started = getQuestStarted(quest.id);
         quest.completed = getQuestCompleted(quest.id);
 
@@ -78,11 +73,6 @@ public class QuestManager<T> where T : Quest, new()
 
             if (quest.started)
             {
-                if (quest.parentQuest != null && !getQuestCompleted(quest.parentQuest))
-                {
-                    continue;
-                }
-
                 if (action(quest))
                 {
                     quest.completed = true;
@@ -140,7 +130,6 @@ public class QuestManager<T> where T : Quest, new()
 
 public class Quest
 {
-    public Type parentQuest;
     public string id { get => GetType().Name; }
     public bool started;
     public bool completed;
