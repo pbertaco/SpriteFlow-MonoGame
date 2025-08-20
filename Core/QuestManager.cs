@@ -4,7 +4,6 @@ public class QuestManager<T> where T : Quest, new()
 {
     Dictionary<string, Quest> dictionary = new();
 
-    Dictionary<Type, Type> parentByType = new();
     Dictionary<Type, Type> nextByType = new();
     HashSet<Type> registeredTypes = new();
 
@@ -19,7 +18,6 @@ public class QuestManager<T> where T : Quest, new()
             if (i > 0)
             {
                 Type prev = sequence[i - 1];
-                parentByType[t] = prev;
                 nextByType[prev] = t;
             }
         }
