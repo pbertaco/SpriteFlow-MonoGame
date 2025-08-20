@@ -134,7 +134,7 @@ public class DGame : Game
 
         inputManager.update();
 
-        if (inputManager.keyPress(Keys.PrintScreen))
+        if (inputManager.keyPress(Keys.F12))
         {
             printScreen();
         }
