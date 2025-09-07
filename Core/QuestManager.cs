@@ -7,7 +7,7 @@ public class QuestManager<T> where T : Quest, new()
     Dictionary<Type, Type> nextByType = new();
     HashSet<Type> registeredTypes = new();
 
-    public QuestManager<T> registerQuestLine(List<Type> sequence)
+    public QuestManager<T> register(List<Type> sequence)
     {
         for (int i = 0; i < sequence.Count; i++)
         {
@@ -20,39 +20,33 @@ public class QuestManager<T> where T : Quest, new()
                 Type prev = sequence[i - 1];
                 nextByType[prev] = t;
             }
+
+            load(t);
         }
 
         return this;
-    }
-
-    public void start(Type type)
-    {
-        setQuestStarted(type);
-        load(type);
-    }
-
-    public void start<Q>() where Q : T, new() => start(typeof(Q));
-
-    public void load<N>() where N : T, new()
-    {
-        load(typeof(N));
     }
 
     public void load(Type type)
     {
         string id = type.Name;
 
+        T quest = null;
+
         if (dictionary.ContainsKey(id))
         {
-            return;
+            quest = (T)dictionary[id];
+        }
+        else
+        {
+            quest = (T)Activator.CreateInstance(type);
         }
 
-        T quest = (T)Activator.CreateInstance(type)!;
 
-        quest.started = getQuestStarted(quest.id);
-        quest.completed = getQuestCompleted(quest.id);
+        quest.started = started(quest.id);
+        quest.completed = completed(quest.id);
 
-        if (quest.started && !quest.completed)
+        if (!quest.completed)
         {
             dictionary[quest.id] = quest;
         }
@@ -64,71 +58,57 @@ public class QuestManager<T> where T : Quest, new()
 
         foreach (T quest in dictionary.Values)
         {
-            if (quest.started && quest.completed)
-            {
-                continue;
-            }
-
-            if (quest.started)
+            if (quest.started && !quest.completed)
             {
                 if (action(quest))
                 {
                     quest.completed = true;
-                    setQuestCompleted(quest.id);
+                    complete(quest.id);
 
                     if (nextByType.TryGetValue(quest.GetType(), out Type nextType))
                     {
-                        if (!getQuestCompleted(nextType) && !getQuestStarted(nextType))
+                        if (!completed(nextType) && !started(nextType))
                         {
                             nextToAutoStart.Add(nextType);
                         }
                     }
                 }
             }
-            else
-            {
-                if (action(quest))
-                {
-                    quest.started = true;
-                    setQuestStarted(quest.id);
-                }
-            }
         }
 
-        foreach (Type t in nextToAutoStart)
+        foreach (Type type in nextToAutoStart)
         {
-            setQuestStarted(t);
-            load(t);
+            start(type);
         }
     }
 
-    public virtual void setQuestStarted(string id) { }
-    public virtual void setQuestStarted(Type type) => setQuestStarted(type.Name);
+    public virtual void start(string id) { }
+    public virtual bool started(string id) => false;
+    public virtual void complete(string id) { }
+    public virtual bool completed(string id) => false;
 
-    public virtual bool getQuestStarted(string id) => false;
-    public virtual bool getQuestStarted(Type type) => getQuestStarted(type.Name);
+    public bool started(Type type) => started(type.Name);
+    public bool completed(Type type) => completed(type.Name);
 
-    public virtual void setQuestCompleted(string id) { }
-    public virtual void setQuestCompleted(Type type) => setQuestCompleted(type.Name);
-
-    public virtual bool getQuestCompleted(string id) => false;
-    public virtual bool getQuestCompleted(Type type) => getQuestCompleted(type.Name);
-
-    public void loadAll()
+    public void start(Type type)
     {
-        foreach (Type t in registeredTypes)
-        {
-            if (getQuestStarted(t) && !getQuestCompleted(t))
-            {
-                load(t);
-            }
-        }
+        start(type.Name);
+        load(type);
     }
+
+    public void complete(Type type)
+    {
+        complete(type.Name);
+        load(type);
+    }
+
 }
 
 public class Quest
 {
     public string id { get => GetType().Name; }
+
     public bool started;
+
     public bool completed;
 }

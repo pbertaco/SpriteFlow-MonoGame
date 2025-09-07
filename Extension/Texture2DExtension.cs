@@ -1,4 +1,4 @@
-﻿namespace Dragon;
+namespace Dragon;
 
 class Self
 {

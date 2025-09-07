@@ -1,4 +1,4 @@
-﻿namespace Dragon;
+namespace Dragon;
 
 public class SaveManager<T> where T : DSave, new()
 {

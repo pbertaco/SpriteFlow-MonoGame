@@ -1,4 +1,4 @@
-﻿namespace Dragon;
+namespace Dragon;
 
 public class DActionRepeat : DAction
 {
@@ -41,7 +41,7 @@ public class DActionRepeat : DAction
 
                 if (executionCount < count)
                 {
-                    action = action.copy(); //TODO: performance
+                    action = action.copy();
                     action.runOnNode(node);
                     dt = actionElapsed + dt - action.duration;
                     elapsed -= dt;

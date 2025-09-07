@@ -1,4 +1,4 @@
-﻿global using Dragon;
+global using Dragon;
 global using Microsoft.Xna.Framework;
 global using Microsoft.Xna.Framework.Audio;
 global using Microsoft.Xna.Framework.Content;
@@ -74,8 +74,8 @@ public class DGame : Game
         graphicsDeviceManager.SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight;
 #else
 
-        //updatePreferredBackBuffer(sizeCurrentDisplayMode);
-        //toggleFullScreen();
+
+
 
         float maxSize = 1;
 

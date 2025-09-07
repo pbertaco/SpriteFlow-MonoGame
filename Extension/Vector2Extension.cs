@@ -1,4 +1,4 @@
-﻿namespace Dragon;
+namespace Dragon;
 
 static class Vector2Extensions
 {
