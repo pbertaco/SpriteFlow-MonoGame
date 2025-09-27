@@ -12,8 +12,14 @@ public class AchievementManager<T> where T : Achievement, new()
 
         if (!string.IsNullOrEmpty(Achievement.steamUserName))
         {
-            string pchName = achievement.id.ToString();
-            SteamUserStats.GetAchievement(pchName, out unlocked);
+            try
+            {
+                string pchName = achievement.id.ToString();
+                SteamUserStats.GetAchievement(pchName, out unlocked);
+            }
+            catch
+            {
+            }
         }
 
         achievement.unlocked = unlocked;
@@ -28,9 +34,15 @@ public class AchievementManager<T> where T : Achievement, new()
     {
         if (!string.IsNullOrEmpty(Achievement.steamUserName))
         {
-            string pchName = achievement.id.ToString();
-            SteamUserStats.SetAchievement(pchName);
-            SteamUserStats.StoreStats();
+            try
+            {
+                string pchName = achievement.id.ToString();
+                SteamUserStats.SetAchievement(pchName);
+                SteamUserStats.StoreStats();
+            }
+            catch
+            {
+            }
         }
 
         achievement.unlocked = true;

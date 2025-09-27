@@ -7,6 +7,11 @@ public class QuestManager<T> where T : Quest, new()
     Dictionary<Type, Type> nextByType = new();
     HashSet<Type> registeredTypes = new();
 
+    public QuestManager<T> register(Type type)
+    {
+        return register(new List<Type> { type });
+    }
+
     public QuestManager<T> register(List<Type> sequence)
     {
         for (int i = 0; i < sequence.Count; i++)

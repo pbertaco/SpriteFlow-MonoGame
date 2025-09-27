@@ -6,6 +6,8 @@ public class DLabelNode : DNode
     public static Dictionary<Language, List<SpriteFont>> spriteFontDictionary = new();
     public static Dictionary<SpriteFont, SamplerState> samplerStateDictionary = new();
 
+
+
     public BlendState blendState;
     public SamplerState samplerState;
     public Color color;
@@ -52,6 +54,11 @@ public class DLabelNode : DNode
             _fontSize = value;
             updateSpriteFontScale();
         }
+    }
+
+    public Vector2 size
+    {
+        get => textureSize * spriteFontScale;
     }
 
     Vector2 _anchorPoint;
@@ -280,8 +287,7 @@ public class DLabelNode : DNode
             dictionary[currentLanguage] = jsonDict ?? new Dictionary<string, string>();
         }
 
-        if (dictionary.TryGetValue(currentLanguage, out Dictionary<string, string> langDict) &&
-            langDict.TryGetValue(key, out string translation))
+        if (dictionary.TryGetValue(currentLanguage, out Dictionary<string, string> langDict) && langDict.TryGetValue(key, out string translation))
         {
             return translation;
         }
@@ -305,7 +311,7 @@ public class DLabelNode : DNode
 
                             if (!string.IsNullOrEmpty(engJson))
                             {
-                                englishDict = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(engJson, new System.Text.Json.JsonSerializerOptions
+                                englishDict = JsonSerializer.Deserialize<Dictionary<string, string>>(engJson, new JsonSerializerOptions
                                 {
                                     Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
                                 });
