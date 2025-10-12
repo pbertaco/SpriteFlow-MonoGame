@@ -4,12 +4,17 @@ public class QuestManager<T> where T : Quest, new()
 {
     Dictionary<string, Quest> dictionary = new();
 
-    Dictionary<Type, Type> nextByType = new();
+    Dictionary<Type, HashSet<Type>> nextByType = new();
+
+    Dictionary<Type, HashSet<Type>> parentsByType = new();
+
     HashSet<Type> registeredTypes = new();
 
     public QuestManager<T> register(Type type)
     {
-        return register(new List<Type> { type });
+        registeredTypes.Add(type);
+        load(type);
+        return this;
     }
 
     public QuestManager<T> register(List<Type> sequence)
@@ -19,17 +24,68 @@ public class QuestManager<T> where T : Quest, new()
             Type t = sequence[i];
 
             registeredTypes.Add(t);
+            load(t);
 
             if (i > 0)
             {
                 Type prev = sequence[i - 1];
-                nextByType[prev] = t;
+                addEdge(prev, t);
             }
-
-            load(t);
         }
 
         return this;
+    }
+
+    public QuestManager<T> register(Dictionary<Type, IEnumerable<Type>> adjacency)
+    {
+        foreach (KeyValuePair<Type, IEnumerable<Type>> kv in adjacency)
+        {
+            registeredTypes.Add(kv.Key);
+            load(kv.Key);
+
+            foreach (Type child in kv.Value)
+            {
+                registeredTypes.Add(child);
+                load(child);
+                addEdge(kv.Key, child);
+            }
+        }
+
+        return this;
+    }
+
+    public QuestManager<T> registerAndStartRoots(Dictionary<Type, IEnumerable<Type>> adjacency)
+    {
+        register(adjacency);
+        startRoots();
+        return this;
+    }
+
+    public QuestManager<T> connect(Type from, Type to)
+    {
+        registeredTypes.Add(from);
+        registeredTypes.Add(to);
+        load(from);
+        load(to);
+        addEdge(from, to);
+        return this;
+    }
+
+    void addEdge(Type from, Type to)
+    {
+        if (!nextByType.TryGetValue(from, out HashSet<Type> set))
+        {
+            set = new HashSet<Type>();
+            nextByType[from] = set;
+        }
+        set.Add(to);
+
+        if (!parentsByType.TryGetValue(to, out HashSet<Type> parents))
+        {
+            parents = new HashSet<Type>();
+            parentsByType[to] = parents;
+        }
+        parents.Add(from);
     }
 
     public void load(Type type)
@@ -70,11 +126,30 @@ public class QuestManager<T> where T : Quest, new()
                     quest.completed = true;
                     complete(quest.id);
 
-                    if (nextByType.TryGetValue(quest.GetType(), out Type nextType))
+                    if (nextByType.TryGetValue(quest.GetType(), out HashSet<Type> children))
                     {
-                        if (!completed(nextType) && !started(nextType))
+                        foreach (Type nextType in children)
                         {
-                            nextToAutoStart.Add(nextType);
+                            if (!completed(nextType) && !started(nextType))
+                            {
+                                bool canStart = true;
+                                if (parentsByType.TryGetValue(nextType, out HashSet<Type> parents))
+                                {
+                                    foreach (Type parent in parents)
+                                    {
+                                        if (!completed(parent))
+                                        {
+                                            canStart = false;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                if (canStart)
+                                {
+                                    nextToAutoStart.Add(nextType);
+                                }
+                            }
                         }
                     }
                 }
@@ -84,6 +159,21 @@ public class QuestManager<T> where T : Quest, new()
         foreach (Type type in nextToAutoStart)
         {
             start(type);
+        }
+    }
+
+    public void startRoots()
+    {
+        foreach (Type type in registeredTypes)
+        {
+            bool hasParents = parentsByType.TryGetValue(type, out HashSet<Type> parents) && parents.Count > 0;
+            if (!hasParents)
+            {
+                if (!started(type) && !completed(type))
+                {
+                    start(type);
+                }
+            }
         }
     }
 

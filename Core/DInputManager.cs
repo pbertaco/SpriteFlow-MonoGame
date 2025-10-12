@@ -24,6 +24,7 @@ public class DInputManager
     {
         return keyboardState.IsKeyDown(key) && lastKeyboardState.IsKeyUp(key);
     }
+
     public bool keyRelease(Keys key)
     {
         return lastKeyboardState.IsKeyDown(key) && keyboardState.IsKeyUp(key);
@@ -31,8 +32,31 @@ public class DInputManager
 
     void updateKeyboard()
     {
+        KeyboardState prev = keyboardState;
         lastKeyboardState = keyboardState;
         keyboardState = Keyboard.GetState();
+
+        Keys[] prevKeys = prev.GetPressedKeys();
+        Keys[] currKeys = keyboardState.GetPressedKeys();
+
+        HashSet<Keys> prevSet = new(prevKeys);
+        HashSet<Keys> currSet = new(currKeys);
+
+        foreach (Keys key in currKeys)
+        {
+            if (!prevSet.Contains(key))
+            {
+                DGame.current.scene.keyDown(key);
+            }
+        }
+
+        foreach (Keys key in prevKeys)
+        {
+            if (!currSet.Contains(key))
+            {
+                DGame.current.scene.keyUp(key);
+            }
+        }
     }
 
     void updateMouse()

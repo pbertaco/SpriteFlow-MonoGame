@@ -43,7 +43,8 @@ public class DScene : DNode
         DGame.current.presentScene(scene);
     }
 
-    public virtual void addTexture2D(Texture2D texture)
-    {
-    }
+    public virtual void addTexture2D(Texture2D texture) { }
+
+    public virtual void keyDown(Keys key) { }
+    public virtual void keyUp(Keys key) { }
 }
