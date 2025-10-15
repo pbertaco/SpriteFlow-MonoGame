@@ -10,6 +10,7 @@ public class AchievementManager<T> where T : Achievement, new()
 
         bool unlocked = false;
 
+#if Windows
         if (!string.IsNullOrEmpty(Achievement.steamUserName))
         {
             try
@@ -21,6 +22,7 @@ public class AchievementManager<T> where T : Achievement, new()
             {
             }
         }
+#endif
 
         achievement.unlocked = unlocked;
 
@@ -32,6 +34,7 @@ public class AchievementManager<T> where T : Achievement, new()
 
     public void unlock(Achievement achievement)
     {
+#if Windows
         if (!string.IsNullOrEmpty(Achievement.steamUserName))
         {
             try
@@ -44,6 +47,7 @@ public class AchievementManager<T> where T : Achievement, new()
             {
             }
         }
+#endif
 
         achievement.unlocked = true;
     }
