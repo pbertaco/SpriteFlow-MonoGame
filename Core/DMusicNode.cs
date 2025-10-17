@@ -18,7 +18,7 @@ public class DMusic
         set
         {
             _volume = MathHelper.Clamp(value, 0f, 1f);
-#if Windows || macOS
+#if Windows || macOS || Linux
             MediaPlayer.Volume = _volume * volumeScale;
 #endif
         }
@@ -53,14 +53,14 @@ public class DMusic
 
                 if (this.key == currentKey)
                 {
-#if Windows || macOS
+#if Windows || macOS || Linux
                     startPosition = MediaPlayer.PlayPosition;
 #endif
                 }
 
                 currentKey = this.key;
 
-#if Windows || macOS
+#if Windows || macOS || Linux
                 MediaPlayer.IsRepeating = true;
                 MediaPlayer.Play(song, startPosition);
 #endif
@@ -92,6 +92,11 @@ public class DMusic
 
 #if macOS || iOS
                 filePath = Path.Combine(AppContext.BaseDirectory, "Content", "mp3", $"{assetName}.mp3");
+#endif
+#if Linux
+                string preferred = Path.Combine(AppContext.BaseDirectory, "Content", "Song", $"{assetName}.mp3");
+                string resolved = DFileManager.ResolvePathCaseInsensitive(AppContext.BaseDirectory, Path.Combine("Content", "Song", $"{assetName}.mp3"));
+                filePath = File.Exists(preferred) ? preferred : (resolved ?? preferred);
 #endif
 
                 using FileStream fileStream = new(filePath, FileMode.Open);

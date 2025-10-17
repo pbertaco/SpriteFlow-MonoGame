@@ -11,7 +11,7 @@ public class DInputManager
         touches = new Dictionary<int, DTouch>();
     }
 
-#if Windows || macOS
+#if Windows || macOS || Linux
     KeyboardState keyboardState;
     KeyboardState lastKeyboardState;
     public void update()
