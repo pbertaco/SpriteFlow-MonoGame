@@ -30,6 +30,11 @@ public class DInputManager
         return lastKeyboardState.IsKeyDown(key) && keyboardState.IsKeyUp(key);
     }
 
+    public KeyboardState getPreviousKeyboardState()
+    {
+        return lastKeyboardState;
+    }
+
     void updateKeyboard()
     {
         KeyboardState prev = keyboardState;

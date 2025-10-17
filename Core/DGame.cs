@@ -37,6 +37,9 @@ public class DGame : Game
     public RasterizerState rasterizerState = new();
     public Effect effect = null;
     public Matrix? transformMatrix = null;
+    readonly bool _startFullScreen;
+    bool _pendingFullScreenToggle;
+    bool _applyingBackBuffer;
 
     public static float currentTime;
     public static float elapsedTime;
@@ -48,7 +51,7 @@ public class DGame : Game
     Vector2 sizeClientBounds => new(Window.ClientBounds.Width, Window.ClientBounds.Height);
     Vector2 sizeCurrentDisplayMode => new(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height);
 
-    public DGame(DScene scene, string title)
+    public DGame(DScene scene, string title, bool startFullScreen = false)
     {
         this.scene = scene;
         graphicsDeviceManager = new GraphicsDeviceManager(this);
@@ -57,6 +60,8 @@ public class DGame : Game
         inputManager = new DInputManager();
         Window.Title = title;
         current = this;
+        _startFullScreen = startFullScreen;
+        _pendingFullScreenToggle = _startFullScreen;
     }
 
     protected override void Initialize()
@@ -73,22 +78,20 @@ public class DGame : Game
 #if iOS || Android
         graphicsDeviceManager.SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight;
 #else
+        float scaleX = sizeCurrentDisplayMode.X / scene.size.X;
+        float scaleY = sizeCurrentDisplayMode.Y / scene.size.Y;
+        float targetScale = Math.Min(scaleX, scaleY);
 
-
-
-
-        float maxSize = 1;
-
-        while (scene.size.X < sizeCurrentDisplayMode.X / maxSize && scene.size.Y < sizeCurrentDisplayMode.Y / maxSize)
-        {
-            updatePreferredBackBuffer(scene.size * maxSize);
-            maxSize += 1;
-        }
+        targetScale = Math.Min(targetScale, 3.0f);
+        targetScale = Math.Max(targetScale, 1.0f);
+        
+        Vector2 initialSize = scene.size * targetScale;
+        updatePreferredBackBuffer(initialSize);
 #endif
 
         presentScene(scene);
         texture = new Texture2D(graphicsDeviceManager.GraphicsDevice, 1, 1);
-        texture.SetData([Color.White]);
+        texture.SetData(new Color[] { Color.White });
         Window.AllowUserResizing = true;
         TargetElapsedTime = TimeSpan.FromSeconds(1.0f / 60.0f);
     }
@@ -132,17 +135,39 @@ public class DGame : Game
             return;
         }
 
-        inputManager.update();
+        if (_pendingFullScreenToggle && !graphicsDeviceManager.IsFullScreen)
+        {
+            try
+            {
+                toggleFullScreen();
+            }
+            catch { }
+            finally { _pendingFullScreenToggle = false; }
+        }
 
-        if (inputManager.keyPress(Keys.F12))
+#if Windows || macOS || Linux
+        // Check for special keys BEFORE inputManager.update() so they're not consumed by scene
+        KeyboardState currentKeyboard = Keyboard.GetState();
+        KeyboardState previousKeyboard = inputManager.getPreviousKeyboardState();
+        
+        if (currentKeyboard.IsKeyDown(Keys.F12) && previousKeyboard.IsKeyUp(Keys.F12))
         {
             printScreen();
         }
 
-        if (inputManager.keyPress(Keys.F11))
+        if (currentKeyboard.IsKeyDown(Keys.F11) && previousKeyboard.IsKeyUp(Keys.F11))
         {
             toggleFullScreen();
         }
+
+        // Exit fullscreen on Escape (only when currently fullscreen)
+        if (currentKeyboard.IsKeyDown(Keys.Escape) && previousKeyboard.IsKeyUp(Keys.Escape) && graphicsDeviceManager.IsFullScreen)
+        {
+            toggleFullScreen();
+        }
+#endif
+
+        inputManager.update();
 
         scene.update();
         scene.evaluateActions(elapsedTime);
@@ -187,29 +212,36 @@ public class DGame : Game
     {
         Window.ClientSizeChanged += (sender, e) =>
         {
-            updatePreferredBackBuffer(sizeClientBounds);
             scene.updateSize(this, sizeClientBounds);
         };
     }
 
     void updatePreferredBackBuffer(Vector2 size)
     {
-        graphicsDeviceManager.PreferredBackBufferWidth = (int)size.X;
-        graphicsDeviceManager.PreferredBackBufferHeight = (int)size.Y;
+        int targetW = (int)size.X;
+        int targetH = (int)size.Y;
+        if (graphicsDeviceManager.PreferredBackBufferWidth == targetW && graphicsDeviceManager.PreferredBackBufferHeight == targetH)
+        {
+            return;
+        }
+
+        graphicsDeviceManager.PreferredBackBufferWidth = targetW;
+        graphicsDeviceManager.PreferredBackBufferHeight = targetH;
         graphicsDeviceManager.ApplyChanges();
     }
 
     void toggleFullScreen()
     {
-        graphicsDeviceManager.IsFullScreen = !graphicsDeviceManager.IsFullScreen;
-
-        if (graphicsDeviceManager.IsFullScreen)
+        bool enable = !graphicsDeviceManager.IsFullScreen;
+        if (enable)
         {
             sizeLastClientBounds = sizeClientBounds;
-            updatePreferredBackBuffer(sizeCurrentDisplayMode);
+            graphicsDeviceManager.IsFullScreen = true;
+            graphicsDeviceManager.ApplyChanges();
         }
         else
         {
+            graphicsDeviceManager.IsFullScreen = false;
             updatePreferredBackBuffer(sizeLastClientBounds);
         }
     }
