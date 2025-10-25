@@ -234,11 +234,11 @@ public class DLabelNode : DNode
             string[] words = text.Split(' ');
             string result = "";
             float currentWidth = 0;
+            float spaceWidth = spriteFont.MeasureString(" ").X * spriteFontScale;
 
             foreach (string word in words)
             {
                 float wordWidth = spriteFont.MeasureString(word).X * spriteFontScale;
-                float spaceWidth = spriteFont.MeasureString(" ").X * spriteFontScale;
 
                 if (currentWidth + wordWidth < maxWidth)
                 {
