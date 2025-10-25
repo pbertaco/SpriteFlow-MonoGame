@@ -197,27 +197,63 @@ public class DLabelNode : DNode
 
     public void lineBreak(int maxWidth)
     {
-        string[] words = text.Split(' ');
-        string result = "";
-        float currentWidth = 0;
+        bool isAsianLanguage = currentLanguage == Language.Japanese || currentLanguage == Language.SimplifiedChinese || currentLanguage == Language.TraditionalChinese || currentLanguage == Language.Korean;
 
-        foreach (string word in words)
+        if (isAsianLanguage)
         {
-            float wordWidth = spriteFont.MeasureString(word).X * spriteFontScale;
+            string result = "";
+            float currentWidth = 0;
 
-            if (currentWidth + wordWidth < maxWidth)
+            foreach (char c in text)
             {
-                result += word + " ";
-                currentWidth += wordWidth;
+                if (c == '\n')
+                {
+                    result += c;
+                    currentWidth = 0;
+                    continue;
+                }
+
+                float charWidth = spriteFont.MeasureString(c.ToString()).X * spriteFontScale;
+
+                if (currentWidth + charWidth < maxWidth)
+                {
+                    result += c;
+                    currentWidth += charWidth;
+                }
+                else
+                {
+                    result += "\n" + c;
+                    currentWidth = charWidth;
+                }
             }
-            else
-            {
-                result = result.TrimEnd() + "\n" + word + " ";
-                currentWidth = wordWidth;
-            }
+
+            text = result;
         }
+        else
+        {
+            string[] words = text.Split(' ');
+            string result = "";
+            float currentWidth = 0;
 
-        text = result.TrimEnd();
+            foreach (string word in words)
+            {
+                float wordWidth = spriteFont.MeasureString(word).X * spriteFontScale;
+                float spaceWidth = spriteFont.MeasureString(" ").X * spriteFontScale;
+
+                if (currentWidth + wordWidth < maxWidth)
+                {
+                    result += word + " ";
+                    currentWidth += wordWidth + spaceWidth;
+                }
+                else
+                {
+                    result = result.TrimEnd() + "\n" + word + " ";
+                    currentWidth = wordWidth + spaceWidth;
+                }
+            }
+
+            text = result.TrimEnd();
+        }
     }
 
     public DLabelNode withShadow(Color color, Vector2 position)
