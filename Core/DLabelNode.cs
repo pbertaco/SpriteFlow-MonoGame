@@ -252,8 +252,7 @@ public class DLabelNode : DNode
             return key;
         }
 
-        bool allDigits = key.All(char.IsDigit);
-        if (allDigits)
+        if (key.All(char.IsDigit))
         {
             return key;
         }
@@ -265,26 +264,9 @@ public class DLabelNode : DNode
 
         if (!dictionary.ContainsKey(currentLanguage))
         {
-            string languageCode = getLanguageFileName(currentLanguage);
-            string fileName = $"Content/json/{languageCode}";
-            Dictionary<string, string> jsonDict = null;
-
-            try
-            {
-                if (File.Exists(fileName))
-                {
-                    string json = File.ReadAllText(fileName);
-                    if (!string.IsNullOrEmpty(json))
-                    {
-                        jsonDict = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(json);
-                    }
-                }
-            }
-            catch (Exception)
-            {
-            }
-
-            dictionary[currentLanguage] = jsonDict ?? new Dictionary<string, string>();
+            string languageCode = getLanguageCode(currentLanguage);
+            string languageFolder = $"Content/json/{languageCode}";
+            dictionary[currentLanguage] = loadLanguageFiles(languageFolder);
         }
 
         if (dictionary.TryGetValue(currentLanguage, out Dictionary<string, string> langDict) && langDict.TryGetValue(key, out string translation))
@@ -298,53 +280,43 @@ public class DLabelNode : DNode
 
             if (!hasDigit || (hasDigit && hasCurly))
             {
-                if (!dictionary.ContainsKey(Language.English))
+                Dictionary<string, string> nullLangDict = dictionary[currentLanguage];
+
+                try
                 {
-                    string englishFileName = "Content/json/en.json";
-                    Dictionary<string, string> englishDict = null;
+                    string languageCode = getLanguageCode(currentLanguage);
+                    string jsonPath = $"Content/json/{languageCode}.json";
 
-                    try
+                    Dictionary<string, string> existingDict = new Dictionary<string, string>();
+
+                    if (File.Exists(jsonPath))
                     {
-                        if (File.Exists(englishFileName))
+                        try
                         {
-                            string engJson = File.ReadAllText(englishFileName);
+                            string existingJson = File.ReadAllText(jsonPath);
 
-                            if (!string.IsNullOrEmpty(engJson))
+                            if (!string.IsNullOrEmpty(existingJson))
                             {
-                                englishDict = JsonSerializer.Deserialize<Dictionary<string, string>>(engJson, new JsonSerializerOptions
-                                {
-                                    Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-                                });
+                                existingDict = JsonSerializer.Deserialize<Dictionary<string, string>>(existingJson) ?? new Dictionary<string, string>();
                             }
                         }
-                    }
-                    catch (Exception)
-                    {
+                        catch { }
                     }
 
-                    dictionary[Language.English] = englishDict ?? new Dictionary<string, string>();
-                }
-
-                Dictionary<string, string> englishLangDict = dictionary[Language.English];
-
-                if (!englishLangDict.ContainsKey(key))
-                {
-                    englishLangDict[key] = key;
-
-                    try
+                    if (!existingDict.ContainsKey(key))
                     {
-                        string engJsonOut = System.Text.Json.JsonSerializer.Serialize(englishLangDict, new System.Text.Json.JsonSerializerOptions
+                        existingDict[key] = "";
+
+                        string engJsonOut = JsonSerializer.Serialize(existingDict, new JsonSerializerOptions
                         {
                             WriteIndented = true,
                             Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
                         });
 
-                        File.WriteAllText("Content/json/en.json", engJsonOut);
-                    }
-                    catch (Exception)
-                    {
+                        File.WriteAllText(jsonPath, engJsonOut);
                     }
                 }
+                catch (Exception) { }
             }
             else
             {
@@ -376,25 +348,65 @@ public class DLabelNode : DNode
         }
     }
 
-    public static string getLanguageFileName(Language language)
+    public static string getLanguageCode(Language language)
     {
         switch (language)
         {
-            case Language.English: return "en.json";
-            case Language.Spanish: return "es.json";
-            case Language.Portuguese: return "pt.json";
-            case Language.French: return "fr.json";
-            case Language.German: return "de.json";
-            case Language.Italian: return "it.json";
-            case Language.Russian: return "ru.json";
-            case Language.Japanese: return "ja.json";
-            case Language.SimplifiedChinese: return "zh-CN.json";
-            case Language.TraditionalChinese: return "zh-TW.json";
-            case Language.Korean: return "ko.json";
-            case Language.Polish: return "pl.json";
-            case Language.Turkish: return "tr.json";
-            default: return language.ToString() + ".json";
+            case Language.English: return "en";
+            case Language.Spanish: return "es";
+            case Language.Portuguese: return "pt";
+            case Language.French: return "fr";
+            case Language.German: return "de";
+            case Language.Italian: return "it";
+            case Language.Russian: return "ru";
+            case Language.Japanese: return "ja";
+            case Language.SimplifiedChinese: return "zh-CN";
+            case Language.TraditionalChinese: return "zh-TW";
+            case Language.Korean: return "ko";
+            case Language.Polish: return "pl";
+            case Language.Turkish: return "tr";
+            default: return language.ToString();
         }
+    }
+
+    private static Dictionary<string, string> loadLanguageFiles(string languageFolder)
+    {
+        Dictionary<string, string> result = new Dictionary<string, string>();
+
+        if (!Directory.Exists(languageFolder))
+        {
+            return result;
+        }
+
+        try
+        {
+            string[] jsonFiles = Directory.GetFiles(languageFolder, "*.json");
+
+            foreach (string jsonFile in jsonFiles)
+            {
+                try
+                {
+                    string json = File.ReadAllText(jsonFile);
+
+                    if (!string.IsNullOrEmpty(json))
+                    {
+                        Dictionary<string, string> fileDict = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
+
+                        if (fileDict != null)
+                        {
+                            foreach (KeyValuePair<string, string> kvp in fileDict)
+                            {
+                                result[kvp.Key] = kvp.Value;
+                            }
+                        }
+                    }
+                }
+                catch (Exception) { }
+            }
+        }
+        catch (Exception) { }
+
+        return result;
     }
 
     public static void setSampler(string fontName, SamplerState state)

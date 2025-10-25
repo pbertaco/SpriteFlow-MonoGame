@@ -117,7 +117,10 @@ public class QuestManager<T> where T : Quest, new()
     {
         List<Type> nextToAutoStart = new();
 
-        foreach (T quest in dictionary.Values)
+        List<Quest> list = dictionary.Values.ToList();
+        list.shuffle();
+
+        foreach (T quest in list)
         {
             if (quest.started && !quest.completed)
             {
