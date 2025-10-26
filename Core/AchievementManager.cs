@@ -16,7 +16,7 @@ public class AchievementManager<T> where T : Achievement, new()
             try
             {
                 string pchName = achievement.id.ToString();
-                //SteamUserStats.GetAchievement(pchName, out unlocked);
+                SteamUserStats.GetAchievement(pchName, out unlocked);
             }
             catch
             {
@@ -40,8 +40,8 @@ public class AchievementManager<T> where T : Achievement, new()
             try
             {
                 string pchName = achievement.id.ToString();
-                //SteamUserStats.SetAchievement(pchName);
-                //SteamUserStats.StoreStats();
+                SteamUserStats.SetAchievement(pchName);
+                SteamUserStats.StoreStats();
             }
             catch
             {
