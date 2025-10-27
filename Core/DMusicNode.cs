@@ -12,6 +12,31 @@ public class DMusic
 
     static float volumeScale = 0.1f;
     static float _volume;
+    static bool _mediaAvailable = true;
+    static bool _mediaProbed = false;
+
+    static bool mediaAvailable()
+    {
+#if Windows || macOS || Linux
+        if (_mediaProbed)
+            return _mediaAvailable;
+
+        _mediaProbed = true;
+
+        try
+        {
+            var _ = MediaPlayer.State;
+            _mediaAvailable = true;
+        }
+        catch (Exception)
+        {
+            _mediaAvailable = false;
+        }
+#endif
+
+        return _mediaAvailable;
+    }
+
     public static float volume
     {
         get => _volume / volumeScale;
@@ -19,7 +44,17 @@ public class DMusic
         {
             _volume = MathHelper.Clamp(value, 0f, 1f);
 #if Windows || macOS || Linux
-            MediaPlayer.Volume = _volume * volumeScale;
+            if (mediaAvailable())
+            {
+                try
+                {
+                    MediaPlayer.Volume = _volume * volumeScale;
+                }
+                catch (Exception)
+                {
+                    _mediaAvailable = false;
+                }
+            }
 #endif
         }
     }
@@ -54,15 +89,35 @@ public class DMusic
                 if (this.key == currentKey)
                 {
 #if Windows || macOS || Linux
-                    startPosition = MediaPlayer.PlayPosition;
+                    if (mediaAvailable())
+                    {
+                        try 
+                        {
+                            startPosition = MediaPlayer.PlayPosition; 
+                        }
+                        catch (Exception)
+                        {
+                            _mediaAvailable = false;
+                        }
+                    }
 #endif
                 }
 
                 currentKey = this.key;
 
 #if Windows || macOS || Linux
-                MediaPlayer.IsRepeating = true;
-                MediaPlayer.Play(song, startPosition);
+                if (mediaAvailable())
+                {
+                    try
+                    {
+                        MediaPlayer.IsRepeating = true;
+                        MediaPlayer.Play(song, startPosition);
+                    }
+                    catch (Exception)
+                    {
+                        _mediaAvailable = false;
+                    }
+                }
 #endif
             }
         }
@@ -84,6 +139,12 @@ public class DMusic
 
         try
         {
+#if Windows || macOS || Linux
+            if (!mediaAvailable())
+            {
+                return null;
+            }
+#endif
             Song song;
 
             if (loadFromStream)
