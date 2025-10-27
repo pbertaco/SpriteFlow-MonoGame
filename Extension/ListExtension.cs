@@ -34,12 +34,6 @@ static class ListExtensions
         return self[i];
     }
 
-    public static List<T> withAllValues<T>(this List<T> self) where T : Enum
-    {
-        self.AddRange((T[])Enum.GetValues(typeof(T)));
-        return self;
-    }
-
     public static void shuffle<T>(this List<T> self)
     {
         int n = self.Count;
