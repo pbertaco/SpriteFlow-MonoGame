@@ -2,7 +2,7 @@ namespace Dragon;
 
 public static class DSound
 {
-    private static readonly Dictionary<string, SoundEffect> content = new();
+    private static Dictionary<string, SoundEffect> content;
 
     public static bool loadFromStream = false;
 
@@ -14,6 +14,12 @@ public static class DSound
         }
 
         string mappedName = SoundEffectMap.GetMappedName(assetName);
+
+        if (content == null)
+        {
+            content = new Dictionary<string, SoundEffect>();
+            DeleteUnmappedSoundEffectXnbFiles();
+        }
 
         if (content.TryGetValue(assetName, out SoundEffect cached))
         {
@@ -52,5 +58,43 @@ public static class DSound
         }
 
         return sound;
+    }
+
+    public static void DeleteUnmappedSoundEffectXnbFiles()
+    {
+        string dir = Path.Combine("Content", "SoundEffect");
+
+        if (!Directory.Exists(dir)) return;
+
+        string[] xnbFiles = Directory.GetFiles(dir, "*.xnb");
+
+        HashSet<string> mappedNames = new HashSet<string>();
+        System.Reflection.FieldInfo mapField = typeof(SoundEffectMap).GetField("_map", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+        System.Reflection.MethodInfo ensureLoadedMethod = typeof(SoundEffectMap).GetMethod("EnsureLoaded", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+        ensureLoadedMethod.Invoke(null, null);
+        Dictionary<string, string> map = mapField.GetValue(null) as Dictionary<string, string>;
+
+        if (map != null)
+        {
+            foreach (string v in map.Values)
+                mappedNames.Add(v);
+        }
+
+        foreach (string file in xnbFiles)
+        {
+            string fileName = Path.GetFileNameWithoutExtension(file);
+
+            if (!mappedNames.Contains(fileName))
+            {
+                try
+                {
+                    File.Delete(file);
+                }
+                catch
+                {
+                    ;
+                }
+            }
+        }
     }
 }
