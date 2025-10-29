@@ -203,7 +203,7 @@ public class DAction
 
     public static DAction playSoundEffect(string assetName, bool waitForCompletion = false)
     {
-        return new DActionPlaySoundEffect(DGame.current.Content.Load<SoundEffect>(assetName), waitForCompletion);
+        return new DActionPlaySoundEffect(DSound.loadSoundEffect(assetName), waitForCompletion);
     }
 
     public static DAction colorize(Color color, float colorBlendFactor, float duration)

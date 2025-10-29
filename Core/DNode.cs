@@ -327,6 +327,7 @@ public class DNode
 
     public static void playSound(string name)
     {
+        DGame.current.scene.run(DAction.playSoundEffect(name));
     }
 
     public static void playMusic(string name, string key = "")
