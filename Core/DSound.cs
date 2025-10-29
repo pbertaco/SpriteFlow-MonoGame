@@ -9,10 +9,16 @@ public static class DSound
     public static SoundEffect loadSoundEffect(string assetName, bool handleException = true)
     {
         if (string.IsNullOrEmpty(assetName))
+        {
             assetName = "missingAudio";
+        }
+
+        string mappedName = SoundEffectMap.GetMappedName(assetName);
 
         if (content.TryGetValue(assetName, out SoundEffect cached))
+        {
             return cached;
+        }
 
         SoundEffect sound = null;
 
@@ -20,10 +26,10 @@ public static class DSound
         {
             if (loadFromStream)
             {
-                string filePath = $"Content/SoundEffect/{assetName}.xnb";
+                string filePath = $"Content/SoundEffect/{mappedName}.xnb";
 #if macOS || Linux
-                string preferred = Path.Combine(AppContext.BaseDirectory, "Content", "SoundEffect", $"{assetName}.xnb");
-                string resolved = DFileManager.ResolvePathCaseInsensitive(AppContext.BaseDirectory, Path.Combine("Content", "SoundEffect", $"{assetName}.xnb"));
+                string preferred = Path.Combine(AppContext.BaseDirectory, "Content", "SoundEffect", $"{mappedName}.xnb");
+                string resolved = DFileManager.ResolvePathCaseInsensitive(AppContext.BaseDirectory, Path.Combine("Content", "SoundEffect", $"{mappedName}.xnb"));
                 filePath = File.Exists(preferred) ? preferred : (resolved ?? preferred);
 #endif
                 using FileStream fileStream = new(filePath, FileMode.Open, FileAccess.Read);
@@ -31,7 +37,7 @@ public static class DSound
             }
             else
             {
-                sound = DGame.current.Content.Load<SoundEffect>($"SoundEffect/{assetName}");
+                sound = DGame.current.Content.Load<SoundEffect>($"SoundEffect/{mappedName}");
             }
 
             content[assetName] = sound;
@@ -44,6 +50,7 @@ public static class DSound
                 sound = loadSoundEffect(null, false);
             }
         }
+
         return sound;
     }
 }
