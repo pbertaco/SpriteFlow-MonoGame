@@ -11,7 +11,7 @@ public static class DSound
         if (string.IsNullOrEmpty(assetName))
             assetName = "missingAudio";
 
-        if (content.TryGetValue(assetName, out var cached))
+        if (content.TryGetValue(assetName, out SoundEffect cached))
             return cached;
 
         SoundEffect sound = null;
@@ -33,6 +33,7 @@ public static class DSound
             {
                 sound = DGame.current.Content.Load<SoundEffect>($"SoundEffect/{assetName}");
             }
+
             content[assetName] = sound;
         }
         catch (Exception e)
