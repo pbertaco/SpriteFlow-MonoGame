@@ -46,13 +46,14 @@ public static class DSound
                 sound = DGame.current.Content.Load<SoundEffect>($"SoundEffect/{mappedName}");
             }
 
+            sound.Name = assetName + " -> " + mappedName;
             content[assetName] = sound;
         }
         catch (Exception e)
         {
             if (handleException)
             {
-                DConsole.WriteLine(e, $"Content.Load<SoundEffect> error: {assetName}");
+                Console.WriteLine($"Content.Load<SoundEffect> error: {mappedName}");
                 sound = loadSoundEffect(null, false);
             }
         }
