@@ -176,6 +176,28 @@ public class DLabelNode : DNode
         _origin = textureSize * _anchorPoint;
     }
 
+    public Vector2 calculateScaleToFit(Vector2 size)
+    {
+        float scale = Math.Min(size.X / this.size.X, size.Y / this.size.Y);
+        return new Vector2(scale);
+    }
+
+    public Vector2 calculateScaleToFill(Vector2 size)
+    {
+        float scale = Math.Max(size.X / this.size.X, size.Y / this.size.Y);
+        return new Vector2(scale);
+    }
+
+    public void setScaleToFit(Vector2 size)
+    {
+        scale = calculateScaleToFit(size);
+    }
+
+    public void setScaleToFill(Vector2 size)
+    {
+        scale = calculateScaleToFill(size);
+    }
+
     public static SpriteFont loadSpriteFont(string assetName = "missingSpriteFont", bool handleException = true)
     {
         SpriteFont spriteFont = null;

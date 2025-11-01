@@ -1,4 +1,5 @@
 global using Dragon;
+global using GameAnalyticsSDK.Net;
 global using Microsoft.Xna.Framework;
 global using Microsoft.Xna.Framework.Audio;
 global using Microsoft.Xna.Framework.Content;
@@ -10,15 +11,21 @@ global using Microsoft.Xna.Framework.Input.Touch;
 global using Microsoft.Xna.Framework.Media;
 global using System;
 global using System.Collections.Generic;
+global using System.Globalization;
 global using System.IO;
 global using System.Linq;
 global using System.Net.Http;
+global using System.Runtime.InteropServices;
 global using System.Text;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
 global using System.Text.RegularExpressions;
 global using System.Threading;
 global using System.Threading.Tasks;
+
+#if Steam
+global using Steamworks;
+#endif
 
 namespace Dragon;
 
