@@ -1,5 +1,4 @@
 global using Dragon;
-global using GameAnalyticsSDK.Net;
 global using Microsoft.Xna.Framework;
 global using Microsoft.Xna.Framework.Audio;
 global using Microsoft.Xna.Framework.Content;
@@ -25,6 +24,10 @@ global using System.Threading.Tasks;
 
 #if Steam
 global using Steamworks;
+#endif
+
+#if Windows
+global using GameAnalyticsSDK.Net;
 #endif
 
 namespace Dragon;
