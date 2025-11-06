@@ -119,7 +119,7 @@ public class DLabelNode : DNode
 
         _spriteFont = font;
 
-        if (!spriteFontDictionary[currentLanguage].Contains(_spriteFont))
+        if (translateText && !spriteFontDictionary[currentLanguage].Contains(_spriteFont))
         {
             _spriteFont = defaultSpriteFontDictionary[currentLanguage];
         }
@@ -280,7 +280,7 @@ public class DLabelNode : DNode
 
     public DLabelNode withShadow(Color color, Vector2 position)
     {
-        DLabelNode label = new(text, color, fontSize, false);
+        DLabelNode label = new(text, spriteFont, color, fontSize, false);
         label.addChild(this, -position);
         return label;
     }
