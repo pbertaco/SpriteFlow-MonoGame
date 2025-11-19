@@ -27,7 +27,7 @@ namespace Dragon;
 
             if (allow)
             {
-                Console.WriteLine(text);
+                Debug.WriteLine(text);
             }
         }
 

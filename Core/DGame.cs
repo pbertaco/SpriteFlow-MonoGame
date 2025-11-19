@@ -10,6 +10,7 @@ global using Microsoft.Xna.Framework.Input.Touch;
 global using Microsoft.Xna.Framework.Media;
 global using System;
 global using System.Collections.Generic;
+global using System.Diagnostics;
 global using System.Globalization;
 global using System.IO;
 global using System.Linq;

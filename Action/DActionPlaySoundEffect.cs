@@ -30,6 +30,6 @@ public class DActionPlaySoundEffect : DAction
     public override void runOnNode(DNode node)
     {
         soundEffect?.Play(volume, 0.0f, 0.0f);
-        Console.WriteLine("Playing sound effect" + soundEffect?.Name);
+        Debug.WriteLine("Playing sound effect" + soundEffect?.Name);
     }
 }

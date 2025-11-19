@@ -75,8 +75,6 @@ public class DFileManager
         return Encoding.UTF8.GetString(Convert.FromBase64String(text));
     }
 
-    // Resolve a relative path against a base directory by matching each segment case-insensitively.
-    // Useful on case-sensitive filesystems (e.g., Linux) when asset names have different casing.
     public static string ResolvePathCaseInsensitive(string baseDirectory, string relativePath)
     {
         if (string.IsNullOrEmpty(baseDirectory) || string.IsNullOrEmpty(relativePath))
@@ -85,7 +83,6 @@ public class DFileManager
         }
 
         string current = baseDirectory;
-        // Normalize separators to '/'
         string[] parts = relativePath.Replace('\\', '/').Split('/', StringSplitOptions.RemoveEmptyEntries);
 
         foreach (string part in parts)

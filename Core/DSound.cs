@@ -53,7 +53,7 @@ public static class DSound
         {
             if (handleException)
             {
-                Console.WriteLine($"Content.Load<SoundEffect> error: {mappedName}");
+                Debug.WriteLine($"Content.Load<SoundEffect> error: {mappedName}");
                 sound = loadSoundEffect(null, false);
             }
         }
