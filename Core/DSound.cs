@@ -49,7 +49,7 @@ public static class DSound
             sound.Name = assetName + " -> " + mappedName;
             content[assetName] = sound;
         }
-        catch (Exception e)
+        catch (Exception)
         {
             if (handleException)
             {
@@ -69,7 +69,7 @@ public static class DSound
 
         string[] xnbFiles = Directory.GetFiles(dir, "*.xnb");
 
-        HashSet<string> mappedNames = new HashSet<string>();
+        HashSet<string> mappedNames = new();
         System.Reflection.FieldInfo mapField = typeof(SoundEffectMap).GetField("_map", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
         System.Reflection.MethodInfo ensureLoadedMethod = typeof(SoundEffectMap).GetMethod("EnsureLoaded", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
         ensureLoadedMethod.Invoke(null, null);
