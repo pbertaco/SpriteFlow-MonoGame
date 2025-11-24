@@ -102,7 +102,7 @@ public static class SteamCloudStorage
             }
 
             byte[] data = File.ReadAllBytes(localPath);
-            SteamRemoteStorage.FileWrite(fileName, data);
+            SteamRemoteStorage.FileWrite(fileName, data, data.Length);
         }
         catch
         {
