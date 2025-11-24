@@ -1,5 +1,20 @@
 namespace Dragon;
 
+public interface ITimestampedSave
+{
+    string saveName { get; set; }
+    string saveTimestamp { get; set; }
+    void UpdateTimestamp();
+}
+
+public struct SaveFileInfo
+{
+    public string fileName;
+    public string fullPath;
+    public DateTime lastModified;
+    public long fileSize;
+}
+
 public class SaveManager<T> where T : DSave, new()
 {
     public static SaveManager<T> current { get; set; }
@@ -21,6 +36,12 @@ public class SaveManager<T> where T : DSave, new()
 
         try
         {
+            if (data is ITimestampedSave timestamped)
+            {
+                timestamped.UpdateTimestamp();
+                contents = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
+            }
+
             SteamCloudStorage.SynchronizeDirectory(savesFolderPath);
             File.WriteAllText(filePath, contents);
             success = true;
@@ -70,6 +91,56 @@ public class SaveManager<T> where T : DSave, new()
         }
 
         return files;
+    }
+
+    public List<SaveFileInfo> getSaveFileInfoList()
+    {
+        List<SaveFileInfo> saveInfoList = new();
+        string[] files = getFiles();
+
+        foreach (string file in files)
+        {
+            try
+            {
+                FileInfo fileInfo = new(file);
+                SaveFileInfo info = new()
+                {
+                    fileName = Path.GetFileName(file),
+                    fullPath = file,
+                    lastModified = fileInfo.LastWriteTime,
+                    fileSize = fileInfo.Length
+                };
+                saveInfoList.Add(info);
+            }
+            catch
+            {
+            }
+        }
+
+        saveInfoList.Sort((x, y) => y.lastModified.CompareTo(x.lastModified));
+        return saveInfoList;
+    }
+
+    public bool tryGetSaveData(string fileName, out T saveData)
+    {
+        saveData = default;
+        string file = DFileManager.path(fileName);
+
+        if (!File.Exists(file))
+        {
+            return false;
+        }
+
+        try
+        {
+            string json = File.ReadAllText(file);
+            saveData = JsonSerializer.Deserialize<T>(json);
+            return saveData != null;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     public bool continueGame()
