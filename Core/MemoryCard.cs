@@ -166,8 +166,6 @@ public class SaveManager<T> where T : DSave, new()
             return;
         }
 
-        SteamCloudStorage.SynchronizeDirectory(gameFolderPath);
-
         string[] files = Directory.GetFiles(gameFolderPath, $"*.bin");
 
         Dictionary<string, List<string>> hashToFiles = new();
