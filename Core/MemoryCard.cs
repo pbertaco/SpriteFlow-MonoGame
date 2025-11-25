@@ -1,12 +1,5 @@
 namespace Dragon;
 
-public interface ITimestampedSave
-{
-    string saveName { get; set; }
-    string saveTimestamp { get; set; }
-    void UpdateTimestamp();
-}
-
 public struct SaveFileInfo
 {
     public string fileName;
@@ -36,12 +29,6 @@ public class SaveManager<T> where T : DSave, new()
 
         try
         {
-            if (data is ITimestampedSave timestamped)
-            {
-                timestamped.UpdateTimestamp();
-                contents = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
-            }
-
             SteamCloudStorage.SynchronizeDirectory(savesFolderPath);
             File.WriteAllText(filePath, contents);
             success = true;

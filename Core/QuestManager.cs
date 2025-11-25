@@ -199,7 +199,6 @@ public class QuestManager<T> where T : Quest, new()
         complete(type.Name);
         load(type);
     }
-
 }
 
 public class Quest
