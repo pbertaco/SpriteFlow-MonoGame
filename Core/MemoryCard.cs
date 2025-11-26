@@ -5,7 +5,6 @@ public struct SaveFileInfo
     public string fileName;
     public string fullPath;
     public DateTime lastModified;
-    public long fileSize;
 }
 
 public class SaveManager<T> where T : DSave, new()
@@ -31,7 +30,7 @@ public class SaveManager<T> where T : DSave, new()
         {
             File.WriteAllText(filePath, contents);
             success = true;
-            SteamCloudStorage.Upload(filePath);
+            SteamCloudStorage.Upload(fileName);
             removeDuplicateFiles();
         }
         catch (Exception)
@@ -55,6 +54,45 @@ public class SaveManager<T> where T : DSave, new()
         }
 
         return success;
+    }
+
+    public bool deleteSave(string fileName)
+    {
+        try
+        {
+            string fileNameOnly = Path.GetFileName(fileName);
+            string filePath = DFileManager.path(fileNameOnly);
+
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+                SteamCloudStorage.Delete(fileNameOnly);
+                return true;
+            }
+
+            string[] files = getFiles() ?? [];
+
+            foreach (string f in files)
+            {
+                string currentFileName = Path.GetFileName(f);
+
+                if (string.Equals(currentFileName, fileNameOnly, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (File.Exists(f))
+                    {
+                        File.Delete(f);
+                        SteamCloudStorage.Delete(currentFileName);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     public string[] getFiles()
@@ -86,14 +124,15 @@ public class SaveManager<T> where T : DSave, new()
         {
             try
             {
-                FileInfo fileInfo = new(file);
+                string fileName = Path.GetFileName(file);
+
                 SaveFileInfo info = new()
                 {
-                    fileName = Path.GetFileName(file),
+                    fileName = fileName,
                     fullPath = file,
-                    lastModified = fileInfo.LastWriteTime,
-                    fileSize = fileInfo.Length
+                    lastModified = TryParseTimestampFromFileName(fileName) ?? new FileInfo(file).LastWriteTime
                 };
+
                 saveInfoList.Add(info);
             }
             catch
@@ -102,6 +141,7 @@ public class SaveManager<T> where T : DSave, new()
         }
 
         saveInfoList.Sort((x, y) => y.lastModified.CompareTo(x.lastModified));
+
         return saveInfoList;
     }
 
@@ -125,34 +165,6 @@ public class SaveManager<T> where T : DSave, new()
         {
             return false;
         }
-    }
-
-    public bool continueGame()
-    {
-        bool success = false;
-        string gameFolderPath = DFileManager.getFolderPath();
-
-        if (Directory.Exists(gameFolderPath))
-        {
-            string[] files = getFiles(); ;
-
-            if (files.Length > 0)
-            {
-                Array.Sort(files, (x, y) => File.GetLastWriteTime(y).CompareTo(File.GetLastWriteTime(x)));
-                string lastFile = files[0];
-                success = loadGame(lastFile);
-
-                while (files.Length > 100)
-                {
-                    string oldestFile = files[files.Length - 1];
-                    File.Delete(oldestFile);
-                    SteamCloudStorage.Delete(oldestFile);
-                    Array.Resize(ref files, files.Length - 1);
-                }
-            }
-        }
-
-        return success;
     }
 
     void removeDuplicateFiles()
@@ -190,10 +202,32 @@ public class SaveManager<T> where T : DSave, new()
                 for (int i = 0; i < fileList.Count - 1; i++)
                 {
                     string duplicate = fileList[i];
+                    string duplicateFileName = Path.GetFileName(duplicate);
                     File.Delete(duplicate);
-                    SteamCloudStorage.Delete(duplicate);
+                    SteamCloudStorage.Delete(duplicateFileName);
                 }
             }
+        }
+    }
+
+    static DateTime? TryParseTimestampFromFileName(string fileName)
+    {
+        try
+        {
+            string name = Path.GetFileNameWithoutExtension(fileName);
+            string work = name.Replace("--", " ");
+
+            if (DateTime.TryParseExact(work, "yyyy-MM-dd HH-mm-ss-fff",
+                CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dt))
+            {
+                return dt;
+            }
+
+            return null;
+        }
+        catch
+        {
+            return null;
         }
     }
 }

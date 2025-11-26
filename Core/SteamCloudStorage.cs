@@ -34,22 +34,23 @@ public static class SteamCloudStorage
             Directory.CreateDirectory(targetFolder);
             int remoteCount = SteamRemoteStorage.GetFileCount();
 
+            // Download remote files that are newer than local
             for (int i = 0; i < remoteCount; i++)
             {
-                string remoteName = SteamRemoteStorage.GetFileNameAndSize(i, out int remoteSize);
+                string fileName = SteamRemoteStorage.GetFileNameAndSize(i, out int remoteSize);
 
-                if (string.IsNullOrEmpty(remoteName) || !remoteName.EndsWith(".bin", StringComparison.OrdinalIgnoreCase))
+                if (string.IsNullOrEmpty(fileName) || !fileName.EndsWith(".bin", StringComparison.OrdinalIgnoreCase))
                 {
                     continue;
                 }
 
-                string localPath = Path.Combine(targetFolder, remoteName);
-                long remoteTimestamp = SteamRemoteStorage.GetFileTimestamp(remoteName);
+                string localPath = Path.Combine(targetFolder, fileName);
+                long remoteTimestamp = SteamRemoteStorage.GetFileTimestamp(fileName);
                 DateTime remoteTime = DateTimeOffset.FromUnixTimeSeconds(remoteTimestamp).UtcDateTime;
 
-                if (!File.Exists(localPath))
+                if (!File.Exists(localPath) || File.GetLastWriteTimeUtc(localPath) < remoteTime)
                 {
-                    DownloadFile(remoteName, localPath, remoteSize, remoteTime);
+                    DownloadFile(fileName, localPath, remoteSize, remoteTime);
                 }
             }
 
@@ -60,19 +61,31 @@ public static class SteamCloudStorage
 
                 if (!SteamRemoteStorage.FileExists(fileName))
                 {
-                    Upload(localPath);
+                    Upload(fileName);
+                }
+                else
+                {
+                    long remoteTimestamp = SteamRemoteStorage.GetFileTimestamp(fileName);
+                    DateTime remoteTime = DateTimeOffset.FromUnixTimeSeconds(remoteTimestamp).UtcDateTime;
+                    DateTime localTime = File.GetLastWriteTimeUtc(localPath);
+
+                    if (localTime > remoteTime)
+                    {
+                        Upload(fileName);
+                    }
                 }
             }
         }
         catch
         {
+            // Silently fail - game continues with local saves
         }
 #else
         _ = targetFolder;
 #endif
     }
 
-    public static void Upload(string localPath)
+    public static void Upload(string fileName)
     {
 #if Steam
         if (!cloudEnabled)
@@ -82,8 +95,14 @@ public static class SteamCloudStorage
 
         try
         {
-            string fileName = Path.GetFileName(localPath);
-            if (string.IsNullOrEmpty(fileName) || !File.Exists(localPath))
+            if (string.IsNullOrEmpty(fileName))
+            {
+                return;
+            }
+
+            string localPath = DFileManager.path(fileName);
+            
+            if (!File.Exists(localPath))
             {
                 return;
             }
@@ -93,14 +112,14 @@ public static class SteamCloudStorage
         }
         catch
         {
-            DConsole.WriteLine(typeof(SteamCloudStorage), $"Failed to upload file: {localPath}");
+            // Silently fail
         }
 #else
-        _ = localPath;
+        _ = fileName;
 #endif
     }
 
-    public static void Delete(string filePath)
+    public static void Delete(string fileName)
     {
 #if Steam
         if (!cloudEnabled)
@@ -110,8 +129,6 @@ public static class SteamCloudStorage
 
         try
         {
-            string fileName = Path.GetFileName(filePath);
-
             if (string.IsNullOrEmpty(fileName))
             {
                 return;
@@ -124,21 +141,21 @@ public static class SteamCloudStorage
         }
         catch
         {
-            DConsole.WriteLine(typeof(SteamCloudStorage), $"Failed to delete file: {filePath}");
+            // Silently fail
         }
 #else
-        _ = filePath;
+        _ = fileName;
 #endif
     }
 
 #if Steam
-    static void DownloadFile(string remoteName, string localPath, int remoteSize, DateTime remoteTimeUtc)
+    static void DownloadFile(string fileName, string localPath, int remoteSize, DateTime remoteTimeUtc)
     {
         try
         {
             if (remoteSize <= 0)
             {
-                remoteSize = SteamRemoteStorage.GetFileSize(remoteName);
+                remoteSize = SteamRemoteStorage.GetFileSize(fileName);
             }
 
             if (remoteSize <= 0)
@@ -147,7 +164,7 @@ public static class SteamCloudStorage
             }
 
             byte[] buffer = new byte[remoteSize];
-            int bytesRead = SteamRemoteStorage.FileRead(remoteName, buffer, remoteSize);
+            int bytesRead = SteamRemoteStorage.FileRead(fileName, buffer, remoteSize);
 
             if (bytesRead <= 0)
             {
@@ -168,7 +185,7 @@ public static class SteamCloudStorage
         }
         catch
         {
-            DConsole.WriteLine(typeof(SteamCloudStorage), $"Failed to download file: {remoteName}");
+            // Silently fail
         }
     }
 #endif
