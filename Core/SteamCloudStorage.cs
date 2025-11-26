@@ -34,7 +34,6 @@ public static class SteamCloudStorage
             Directory.CreateDirectory(targetFolder);
             int remoteCount = SteamRemoteStorage.GetFileCount();
 
-            // Download remote files that are newer than local
             for (int i = 0; i < remoteCount; i++)
             {
                 string fileName = SteamRemoteStorage.GetFileNameAndSize(i, out int remoteSize);
@@ -48,13 +47,12 @@ public static class SteamCloudStorage
                 long remoteTimestamp = SteamRemoteStorage.GetFileTimestamp(fileName);
                 DateTime remoteTime = DateTimeOffset.FromUnixTimeSeconds(remoteTimestamp).UtcDateTime;
 
-                if (!File.Exists(localPath) || File.GetLastWriteTimeUtc(localPath) < remoteTime)
+                if (!File.Exists(localPath))
                 {
                     DownloadFile(fileName, localPath, remoteSize, remoteTime);
                 }
             }
 
-            // Upload local files that don't exist remotely or are newer
             foreach (string localPath in Directory.GetFiles(targetFolder, "*.bin"))
             {
                 string fileName = Path.GetFileName(localPath);
@@ -63,22 +61,10 @@ public static class SteamCloudStorage
                 {
                     Upload(fileName);
                 }
-                else
-                {
-                    long remoteTimestamp = SteamRemoteStorage.GetFileTimestamp(fileName);
-                    DateTime remoteTime = DateTimeOffset.FromUnixTimeSeconds(remoteTimestamp).UtcDateTime;
-                    DateTime localTime = File.GetLastWriteTimeUtc(localPath);
-
-                    if (localTime > remoteTime)
-                    {
-                        Upload(fileName);
-                    }
-                }
             }
         }
         catch
         {
-            // Silently fail - game continues with local saves
         }
 #else
         _ = targetFolder;
@@ -101,7 +87,7 @@ public static class SteamCloudStorage
             }
 
             string localPath = DFileManager.path(fileName);
-            
+
             if (!File.Exists(localPath))
             {
                 return;
@@ -112,7 +98,6 @@ public static class SteamCloudStorage
         }
         catch
         {
-            // Silently fail
         }
 #else
         _ = fileName;
@@ -141,7 +126,6 @@ public static class SteamCloudStorage
         }
         catch
         {
-            // Silently fail
         }
 #else
         _ = fileName;
@@ -185,7 +169,6 @@ public static class SteamCloudStorage
         }
         catch
         {
-            // Silently fail
         }
     }
 #endif

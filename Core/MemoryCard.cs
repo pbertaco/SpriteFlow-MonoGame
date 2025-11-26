@@ -170,6 +170,7 @@ public class SaveManager<T> where T : DSave, new()
     void removeDuplicateFiles()
     {
         string gameFolderPath = DFileManager.getFolderPath();
+
         if (!Directory.Exists(gameFolderPath))
         {
             return;
