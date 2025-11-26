@@ -31,6 +31,7 @@ public class SaveManager<T> where T : DSave, new()
         {
             File.WriteAllText(filePath, contents);
             success = true;
+            SteamCloudStorage.Upload(filePath);
             removeDuplicateFiles();
         }
         catch (Exception)
@@ -64,6 +65,7 @@ public class SaveManager<T> where T : DSave, new()
 
         if (Directory.Exists(gameFolderPath))
         {
+            SteamCloudStorage.SynchronizeDirectory(gameFolderPath);
             removeDuplicateFiles();
             files = Directory.GetFiles(gameFolderPath, $"*.bin");
         }
@@ -144,6 +146,7 @@ public class SaveManager<T> where T : DSave, new()
                 {
                     string oldestFile = files[files.Length - 1];
                     File.Delete(oldestFile);
+                    SteamCloudStorage.Delete(oldestFile);
                     Array.Resize(ref files, files.Length - 1);
                 }
             }
@@ -188,6 +191,7 @@ public class SaveManager<T> where T : DSave, new()
                 {
                     string duplicate = fileList[i];
                     File.Delete(duplicate);
+                    SteamCloudStorage.Delete(duplicate);
                 }
             }
         }
