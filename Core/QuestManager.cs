@@ -57,7 +57,7 @@ public class QuestManager<T> where T : Quest, new()
     public QuestManager<T> registerAndStartRoots(Dictionary<Type, IEnumerable<Type>> adjacency)
     {
         register(adjacency);
-        startRoots();
+        startEligible();
         return this;
     }
 
@@ -165,14 +165,38 @@ public class QuestManager<T> where T : Quest, new()
         }
     }
 
-    public void startRoots()
+    public void startEligible()
     {
         foreach (Type type in registeredTypes)
         {
             bool hasParents = parentsByType.TryGetValue(type, out HashSet<Type> parents) && parents.Count > 0;
-            if (!hasParents)
+
+            if (hasParents)
             {
-                if (!started(type) && !completed(type))
+                if (started(type))
+                {
+                    continue;
+                }
+
+                bool canStart = true;
+
+                foreach (Type parent in parentsByType[type])
+                {
+                    if (!completed(parent))
+                    {
+                        canStart = false;
+                        break;
+                    }
+                }
+
+                if (canStart)
+                {
+                    start(type);
+                }
+            }
+            else
+            {
+                if (!started(type))
                 {
                     start(type);
                 }
