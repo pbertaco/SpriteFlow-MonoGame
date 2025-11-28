@@ -345,7 +345,7 @@ public class DLabelNode : DNode
                     string languageCode = getLanguageCode(currentLanguage);
                     string jsonPath = $"Content/json/{languageCode}.json";
 
-                    Dictionary<string, string> existingDict = new Dictionary<string, string>();
+                    Dictionary<string, string> existingDict = new();
 
                     if (File.Exists(jsonPath))
                     {
@@ -429,7 +429,7 @@ public class DLabelNode : DNode
 
     private static Dictionary<string, string> loadLanguageFiles(string languageFolder)
     {
-        Dictionary<string, string> result = new Dictionary<string, string>();
+        Dictionary<string, string> result = new();
 
         if (!Directory.Exists(languageFolder))
         {
@@ -459,10 +459,16 @@ public class DLabelNode : DNode
                         }
                     }
                 }
-                catch (Exception) { }
+                catch (Exception e)
+                {
+                    ;
+                }
             }
         }
-        catch (Exception) { }
+        catch (Exception)
+        {
+            ;
+        }
 
         return result;
     }

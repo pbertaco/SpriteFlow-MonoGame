@@ -17,6 +17,8 @@ public class DActionPlaySoundEffect : DAction
 
     SoundEffect soundEffect;
 
+    const float PitchVariance = 0.08f;
+
     public DActionPlaySoundEffect(SoundEffect soundEffect, bool waitForCompletion) : base(0)
     {
         this.soundEffect = soundEffect;
@@ -29,7 +31,18 @@ public class DActionPlaySoundEffect : DAction
 
     public override void runOnNode(DNode node)
     {
-        soundEffect?.Play(volume, 0.0f, 0.0f);
-        Debug.WriteLine("Playing sound effect" + soundEffect?.Name);
+        float randomPitch = 0.0f;
+
+        try
+        {
+            randomPitch = (DNode.random.NextFloat() * 2f - 1f) * PitchVariance;
+        }
+        catch
+        {
+            randomPitch = 0.0f;
+        }
+
+        soundEffect?.Play(volume, randomPitch, 0.0f);
+        Debug.WriteLine("Playing sound effect" + soundEffect?.Name + $" pitch={randomPitch:0.000}");
     }
 }
