@@ -63,6 +63,7 @@ public class DGame : Game
     {
         this.scene = scene;
         graphicsDeviceManager = new GraphicsDeviceManager(this);
+        graphicsDeviceManager.HardwareModeSwitch = false;
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
         inputManager = new DInputManager();
@@ -79,15 +80,10 @@ public class DGame : Game
     protected override void LoadContent()
     {
         spriteBatch = new SpriteBatch(GraphicsDevice);
-        base.LoadContent();
 
 #if iOS || Android
         graphicsDeviceManager.SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight;
 #else
-
-
-
-
         float maxSize = 1;
 
         while (scene.size.X < sizeCurrentDisplayMode.X / maxSize && scene.size.Y < sizeCurrentDisplayMode.Y / maxSize)

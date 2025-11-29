@@ -206,7 +206,7 @@ public class DLabelNode : DNode
         {
             spriteFont = DGame.current.Content.Load<SpriteFont>($"SpriteFont/{assetName}");
         }
-        catch (Exception)
+        catch (Exception e)
         {
             if (handleException)
             {
@@ -358,7 +358,9 @@ public class DLabelNode : DNode
                                 existingDict = JsonSerializer.Deserialize<Dictionary<string, string>>(existingJson) ?? new Dictionary<string, string>();
                             }
                         }
-                        catch { }
+                        catch
+                        {
+                        }
                     }
 
                     if (!existingDict.ContainsKey(key))
@@ -374,7 +376,10 @@ public class DLabelNode : DNode
                         File.WriteAllText(jsonPath, engJsonOut);
                     }
                 }
-                catch (Exception) { }
+                catch (Exception e)
+                {
+                    ;
+                }
             }
             else
             {
@@ -465,7 +470,7 @@ public class DLabelNode : DNode
                 }
             }
         }
-        catch (Exception)
+        catch (Exception e)
         {
             ;
         }
